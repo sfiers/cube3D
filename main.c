@@ -10,7 +10,7 @@ void fill_info(t_info *info)
 	info->pov = 66;
 	info->a.x = 160;
 	info->a.y = 160;
-	info->angle = 90; // link to input NESW
+	info->angle = 0; // link to input NESW
 	info->a.z = 32; // retirer ???
 	info->bad = info->pov/2;
 	info->bd = info->screenWidth / 2;
@@ -26,6 +26,7 @@ void fill_info(t_info *info)
 	info->next_axis[0] = (int)info->a.x + (int)info->blocksize - ((int)info->a.x % (int)info->blocksize);
 	info->next_axis[1] = (int)info->a.y + (int)info->blocksize - ((int)info->a.y % (int)info->blocksize);
 	info->side = 0; //*************new
+	coordinatesofbarrel(info);
 }
 
 void update_info(t_info *info)
@@ -124,7 +125,8 @@ void	ft_display(t_info *info, int whichray, double wall_hight) // probablenent s
 			mlx_put_in_img(info, whichray, y++, color);
 			//mlx_put_in_img(info, whichray, y++, 0xcd853f);
 		}
-		mlx_put_in_img(info, whichray, y++, 0x54ff9f);  //sol
+		if (y < info->screenHeight)
+			mlx_put_in_img(info, whichray, y++, 0x54ff9f);  //sol
 	}
 }
 
@@ -142,9 +144,17 @@ void put_texture(t_info *info)
 	info->we.data = (int *)mlx_get_data_addr(info->we.ptr, &info->we.bpp, &info->we.size, &info->we.a);
 	info->ea.ptr = mlx_xpm_file_to_image(info->s.mlx, "./test.xpm", &size, &size);
 	info->ea.data = (int *)mlx_get_data_addr(info->ea.ptr, &info->ea.bpp, &info->ea.size, &info->ea.a);
+	info->sp.ptr = mlx_xpm_file_to_image(info->s.mlx, "./barrel.xpm", &size, &size);
+	info->sp.data = (int *)mlx_get_data_addr(info->sp.ptr, &info->sp.bpp, &info->sp.size, &info->sp.a);
 }
 
-int	main()
+// void fill_static(t_info *info)
+// {
+// 	static double barrel_a[info->screenWidth];
+// 	static double barrel_c[info->screenWidth];
+// }
+
+int main()
 {
 	t_info info;
 	t_maptab tab;
@@ -154,13 +164,14 @@ int	main()
 	parsing(&tab, &info);
 	info.worldMap = tab.tab;
 	fill_info(&info);
+	//fill_static(&info);
 	info.s.mlx = mlx_init();
 // 	all->fractal.img = mlx_new_image(all->wdw.mlx_ptr, W_SIZE_X, W_SIZE_Y);
 // all->fractal.data = (int *)mlx_get_data_addr(all->fractal.img, &all->fractal.bpp, &all->fractal.size, &all->fractal.a);
    	info.s.win = mlx_new_window(info.s.mlx, info.screenWidth, info.screenHeight, "Cube3D");
 	info.s.img = mlx_new_image(info.s.mlx, info.screenWidth, info.screenHeight);
 	info.s.data = (int *)mlx_get_data_addr(info.s.img, &info.s.bpp, &info.s.size, &info.s.a);
-	rendering(&info, &barrel);
+	rendering(&info);
 	// mlx_put_image_to_window(s.mlx, s.win, s.img, info.screenWidth, info.screenHeight);
 	mlx_key_hook(info.s.win, ft_key_press, &info);
 	// mlx_key_hook(s.win, ft_angle, &info);
@@ -171,45 +182,62 @@ int	main()
   mlx_loop(info.s.mlx);
 }
 
-void rendering(t_info *info, t_sprites *barrel)
+int saveintab(t_info *info, int whichray)
+{
+	if (!(info->barrel.walldistance = malloc(sizeof(double) * (info->screenWidth))))
+		return (-1);
+	if (!(info->barrel.a = malloc(sizeof(double) * (info->screenWidth))))
+		return (-1);
+	if (!(info->barrel.c = malloc(sizeof(double) * (info->screenWidth))))
+		return (-1);
+	// info->barrel.a[whichray] = info->ray.m;
+	// info->barrel.c[whichray] = info->ray.n;
+	//printf("ray.m = %f et ray.n = %f\n", info->ray.m, info->ray.n);
+	//printf("info->barrel.a[%d] = %f et info->barrel.c[%d] = %f\n", whichray, info->barrel.a[whichray], whichray, info->barrel.c[whichray]);
+	return (1);
+}
+
+int rendering(t_info *info)
 {
 	int whichray;
 	double shortest_distance;
-	double wall_hight;
-	double distance_tab[info->screenWidth];
-	//static int wall[2];
+	double wall_height;
 	
 	info->wall[0] = -1;
 	info->wall[1] = -1;
-
 	whichray = 0;
 	// mlx_clear_window(info->s.mlx, info->s.win); don t clear with image
 	put_texture(info);
+	saveintab(info, whichray);
 	while(whichray < info->screenWidth)
 	{
 		// printf("------------------ray = %d\n", whichray);
 		update_info(info);
 		p_on_plan(info, (double)whichray);  
 		ray(&info->ray, info->a, info->p_of_plan);
+		info->barrel.a[whichray] = info->ray.m;
+		info->barrel.c[whichray] = info->ray.n;
+		//printf("info->barrel.a[%d] = %f et info->barrel.c[%d] = %f\n", whichray, info->barrel.a[whichray], whichray, info->barrel.c[whichray]);
 		test_x_axis(info);
 		test_y_axis(info);
 		shortest_distance = distance_to_wall(info);
 		//printf("whichray = %d\n", whichray);
-		distance_tab[whichray] = shortest_distance;
+		info->barrel.walldistance[whichray] = shortest_distance;
 		//printf("shortest_distance = %f et distance_tab[whichray] = %f\n", shortest_distance, distance_tab[whichray]);
-		wall_hight = walls(info, shortest_distance, whichray);
+		wall_height = walls(info, shortest_distance, whichray);
 		// // printf("distance %f\n", shortest_distance);
 		// printf("slice_hight %f\n", slice_hight);dds
-		ft_display(info, whichray, wall_hight);
+		ft_display(info, whichray, wall_height);
 		whichray++;
 		// // // // printf("a.x = %f\n", info->a.x);
 		// // // // printf("a.y = %f\n", info->a.y);
 	}
-	handlesprites(barrel, info);
+	handlesprites(info);
 	mlx_put_image_to_window(info->s.mlx, info->s.win, info->s.img, 0, 0);
 	// printf("a.x = %f\n", info->a.x);
 	// printf("a.y = %f\n", info->a.y);
 	// printf("angle = %f\n", info->angle);
+	return (1);
 } 
 
 void p_on_plan(t_info *info, double whichray)

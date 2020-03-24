@@ -17,7 +17,7 @@ int	ft_key_press(int keycode, t_info *info, t_sprites *barrel)
 	if (keycode == 53)
 		exit(0);
     	// mlx_destroy_window(s->mlx, s->win);
-	rendering(info, barrel);
+	rendering(info);
 	// // // printf("a.x = %f\n", info->a.x);
 	// // // printf("a.y = %f\n", info->a.y);
 	// // // printf("angle = %f\n", info->angle);
@@ -48,7 +48,11 @@ int             ft_angle(int keycode, t_info *info)
 	if (keycode == 124)
 	{
     	(info->angle) -= 5; // motion(info, LEFT);
+		if (info->angle < 0)
+			info->angle = 360 + info->angle;
 	}
+	if (info->angle >= 360)
+		info->angle -= 360;
 	// // // printf("keycode2 = %d\n", keycode);
 	// // // printf("info.angle = %f\n", info->angle);
 	return(0);

@@ -54,6 +54,11 @@
 ** ------------------------- Structure Definitions -----------------------------
 */
 
+typedef struct      s_def
+{
+	int screenwidth;
+}				    t_def;
+
 typedef struct      s_p
 {
 	double x;
@@ -134,6 +139,44 @@ typedef struct	s_mlx_ptr
 // 	char opacity;
 // }				t_rgb;
 
+typedef struct      s_droite
+{
+	double a;
+	double b;
+	double c;
+}					t_droite;
+
+typedef struct      s_sprites
+{
+	//int nbsprite;
+	double distance[mapWidth*mapHeight];
+	double x[mapWidth*mapHeight];
+	double y[mapWidth*mapHeight];
+	//double seensprites[whichray][mapWidth*mapHeight];
+	t_p spriteplandir;
+	double startdrawx[mapWidth*mapHeight];
+	double startdrawy[mapWidth*mapHeight];
+	int startray;
+	double height;
+	double ab[mapWidth*mapHeight];
+	double disttworay[mapWidth*mapHeight];
+	t_ray firstray;
+	t_ray lastray;
+	t_ray spriteray;
+	t_ray xaxis;
+	t_droite droitetemp;
+	t_droite droitetemp2;
+	t_p pointtemp;
+	t_p temp2;
+	double *walldistance;
+	double		*a;
+	double		*c;
+	double spriteangle;
+	double endray;
+	int reverse;
+	// float rayseekm;
+}				    t_sprites;
+
 typedef struct      s_info
 {
 	int **worldMap;
@@ -173,13 +216,14 @@ typedef struct      s_info
 	t_mlx_ptr sp;
 	int i;
 	int wall[2];
-	int spflag;
-	double spdistance;
-	double spratio;
-	double sp_x;
-	double sp_y;
-	double temp_y;
+	// int spflag;
+	// double spdistance;
+	// double spratio;
+	// double sp_x;
+	// double sp_y;
+	// double temp_y;
 	int nbsprite;
+	t_sprites barrel;
 
 //	int wall[2];
 	// t_rgb ceiling;
@@ -247,37 +291,6 @@ typedef struct      s_element
 	int trgb_ceiling;
 	int comma;
 }					t_element;
-
-typedef struct      s_droite
-{
-	double a;
-	double b;
-	double c;
-}					t_droite;
-
-typedef struct      s_sprites
-{
-	//int nbsprite;
-	double distance[mapWidth*mapHeight];
-	double x[mapWidth*mapHeight];
-	double y[mapWidth*mapHeight];
-	//double seensprites[whichray][mapWidth*mapHeight];
-	t_p spriteplandir;
-	double startdrawx[mapWidth*mapHeight];
-	double startdrawy[mapWidth*mapHeight];
-	int startray;
-	double ab[mapWidth*mapHeight];
-	double disttworay[mapWidth*mapHeight];
-	t_ray firstray;
-	t_ray lastray;
-	t_ray spriteray;
-	t_ray xaxis;
-	t_droite droitetemp;
-	t_droite droitetemp2;
-	t_p pointtemp;
-	t_p temp2;
-	// float rayseekm;
-}				    t_sprites;
 
 typedef struct	mlx_ptr_s
 {
@@ -378,6 +391,7 @@ double ft_rad2deg(double rad);
 void find_y(t_p *a, double m, double n);
 void find_x(t_p *a, double m, double n);
 double toa(double angle, double o);
+double ft_distancepointdroite(t_p p, t_droite e);
 
 /*
 ** ---------------------- Strings & Chars Functions ----------------------------
@@ -401,13 +415,15 @@ void nesw(t_info *info);
 ** ------------------------------- Sprites -------------------------------------
 */
 
-void handlesprites(t_sprites *barrel, t_info *info);
-void coordinatesofbarrel(t_sprites *barrel, t_info *info);
-void distance_2_sprite(t_sprites *barrel, t_info *info);
-void ft_sort_sprites(t_sprites *barrel, t_info *info);
-void initialise(t_sprites *barrel, t_info *info, int i);
-void seekdrawstart(t_sprites *barrel, t_info *info, int i);
-void findray(t_sprites *barrel, t_info *info, int i);
+void handlesprites(t_info *info);
+void coordinatesofbarrel(t_info *info);
+void distance_2_sprite(t_info *info);
+void ft_sort_sprites(t_info *info);
+void initialise(t_info *info, int i);
+void seekdrawstart(t_info *info, int i);
+void findray(t_info *info, int i);
+void print_sprite(t_info *info, int i);
+void print_sprite_reverse(t_info *info, int i);
 
 
 /*
@@ -433,7 +449,9 @@ int	ft_key_press(int keycode, t_info *info, t_sprites *barrel);
 ** --------------------------- Rendering --------------------------------------
 */
 
-void rendering(t_info *info, t_sprites *barrel);
+int rendering(t_info *info);
+void	mlx_put_in_img(t_info *info, int x, int y, int color);
+int saveintab(t_info *info, int whichray);
 void update_info(t_info *info);
 
 
