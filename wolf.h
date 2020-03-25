@@ -172,8 +172,10 @@ typedef struct      s_sprites
 	double		*a;
 	double		*c;
 	double spriteangle;
-	double endray;
+	int endray;
 	int reverse;
+	int middleray;
+	int ray_nb;
 	// float rayseekm;
 }				    t_sprites;
 
@@ -421,9 +423,10 @@ void distance_2_sprite(t_info *info);
 void ft_sort_sprites(t_info *info);
 void initialise(t_info *info, int i);
 void seekdrawstart(t_info *info, int i);
-void findray(t_info *info, int i);
+int findray(t_info *info, int i, double x, double y);
 void print_sprite(t_info *info, int i);
 void print_sprite_reverse(t_info *info, int i);
+void nb_ray(t_info *info, int i);
 
 
 /*
