@@ -44,9 +44,43 @@ int findray(t_info *info, int i, double x, double y)
 	info->barrel.pointtemp.x = x;
 	info->barrel.pointtemp.y = y;
 	//printf("pointtemp.x = %f et pointtemp.y = %f\n", info->barrel.pointtemp.x, info->barrel.pointtemp.y);
-	//whichray = -(info->screenWidth/2);
-	whichray = 0;
+	whichray = -(info->screenWidth - 1);
+	//whichray = 0;
 	//printf("barrel.a[%d] = %f et barrel.c[%d] = %f\n", i, info->barrel.a[i], i, info->barrel.c[i]);
+	while (whichray < 0)
+	{
+	//	printf("info->barrel.a[%d] = %f et info->barrel.c[%d] = %f\n", whichray, info->barrel.a[whichray], whichray, info->barrel.c[whichray]);
+		// y = mx + n=> Ax + By + C = 0
+		info->barrel.droitetemp.a = info->barrel.n_a[-whichray] ; // m
+		//droitetemp.b = info->barrel.b[whichray]; // -1
+		info->barrel.droitetemp.b = -1; // -1
+		//info->barrel.droitetemp.c = barrel_c[whichray]; // n
+		info->barrel.droitetemp.c = info->barrel.n_c[- whichray];
+		info->barrel.droitetemp2.a = info->barrel.n_a[- (whichray + 1)];
+		//info->barrel.droitetemp2.b = info->barrel.b[whichray + 1];
+		info->barrel.droitetemp2.b = -1;
+		if (whichray == -1)
+		{
+			info->barrel.droitetemp2.c = info->barrel.c[0];
+			info->barrel.droitetemp2.a = info->barrel.a[0];
+		}
+		if (whichray != -1)
+		{
+			info->barrel.droitetemp2.c = info->barrel.n_c[- (whichray + 1)];
+			info->barrel.droitetemp2.a = info->barrel.n_a[- (whichray + 1)];
+		}
+		distance = ft_distancepointdroite(info->barrel.pointtemp, info->barrel.droitetemp);
+		distance2 = ft_distancepointdroite(info->barrel.pointtemp, info->barrel.droitetemp2);
+	//	printf("distance = %f et distance2 = %f\n", distance, distance2);
+		if(distance < distance2)
+		{
+			// if (whichray <= -200)
+			// 	return (-200);
+			return (whichray - 1);
+		}
+		whichray++;
+	}
+	whichray = 0;
 	while (whichray < info->screenWidth - 1)
 	{
 	//	printf("info->barrel.a[%d] = %f et info->barrel.c[%d] = %f\n", whichray, info->barrel.a[whichray], whichray, info->barrel.c[whichray]);
@@ -138,7 +172,8 @@ void handlesprites(t_info *info)
 			if (info->barrel.startray >= 0)
 			{
 				//printf("startray = %d\n", info->barrel.startray);
-				print_sprite(info, i);
+				//if (info->barrel.ray_nb < 1600)
+					print_sprite(info, i);
 			}
 			else
 			{
@@ -151,7 +186,8 @@ void handlesprites(t_info *info)
 				//info->barrel.endray = info->barrel.startray + ((64/info->barrel.height) * 64);
 				printf("endray = %d\n", info->barrel.endray);
 				//info->barrel.endray -= 51;
-				print_sprite_reverse(info, i);
+				if (info->barrel.ray_nb < 1600)
+					print_sprite_reverse(info, i);
 			}
 		}
 		i++;
@@ -216,16 +252,18 @@ void nb_ray(t_info *info, int i)
 
 	info->barrel.ray_nb = 0;
 	ratio = 64/info->barrel.height;
-	//printf("ratio = %f\n", ratio);
 	info->tex_x = 0;
 	whichray = 0;
 //	printf("whichray = %d\n", whichray);
-	while (info->tex_x < 64)
+	while (info->tex_x < 64 && ratio != 0)
 	{
 		info->tex_x += ratio;
 		whichray++;
 	}
-	info->barrel.ray_nb = whichray - 1;
+	if (whichray == 0)
+		info->barrel.ray_nb = 0;
+	else
+		info->barrel.ray_nb = whichray - 1;
 	printf("raynb = %d\n", whichray - 1);
 }
 
@@ -267,7 +305,7 @@ void print_sprite_reverse(t_info *info, int i)
 				
 			//printf("tex_x = %d et tex_y = %d\n", (int)info->tex_x, (int)info->tex_y);
 			}
-			if ((info->sp.data[(int)info->tex_x + (int)info->tex_y * 64]) != 0 && info->barrel.walldistance[whichray] > info->barrel.distance[i])
+			if ((info->sp.data[(int)info->tex_x + (int)info->tex_y * 64]) != 0 && info->barrel.walldistance[whichray] > info->barrel.distance[i] && whichray <= 1599)
 				mlx_put_in_img(info, whichray, y, color);
 			y++;
 		}

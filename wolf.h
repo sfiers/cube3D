@@ -171,6 +171,8 @@ typedef struct      s_sprites
 	double *walldistance;
 	double		*a;
 	double		*c;
+	double		*n_a;
+	double		*n_c;
 	double spriteangle;
 	int endray;
 	int reverse;
@@ -454,7 +456,8 @@ int	ft_key_press(int keycode, t_info *info, t_sprites *barrel);
 
 int rendering(t_info *info);
 void	mlx_put_in_img(t_info *info, int x, int y, int color);
-int saveintab(t_info *info, int whichray);
+int saveintab(t_info *info);
+void negative_rays_to_tab(t_info *info);
 void update_info(t_info *info);
 
 
