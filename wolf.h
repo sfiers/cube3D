@@ -458,6 +458,7 @@ int rendering(t_info *info);
 void	mlx_put_in_img(t_info *info, int x, int y, int color);
 int saveintab(t_info *info);
 void negative_rays_to_tab(t_info *info);
+void positive_rays_to_tab(t_info *info);
 void update_info(t_info *info);
 
 

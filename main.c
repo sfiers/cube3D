@@ -186,13 +186,13 @@ int saveintab(t_info *info)
 {
 	if (!(info->barrel.walldistance = malloc(sizeof(double) * (info->screenWidth))))
 		return (-1);
-	if (!(info->barrel.a = malloc(sizeof(double) * (info->screenWidth))))
+	if (!(info->barrel.a = malloc(sizeof(double) * (info->screenWidth + info->screenWidth/2))))
 		return (-1);
-	if (!(info->barrel.c = malloc(sizeof(double) * (info->screenWidth))))
+	if (!(info->barrel.c = malloc(sizeof(double) * (info->screenWidth + info->screenWidth/2))))
 		return (-1);
-	if (!(info->barrel.n_a = malloc(sizeof(double) * (info->screenWidth))))
+	if (!(info->barrel.n_a = malloc(sizeof(double) * (info->screenWidth/2))))
 		return (-1);
-	if (!(info->barrel.n_c = malloc(sizeof(double) * (info->screenWidth))))
+	if (!(info->barrel.n_c = malloc(sizeof(double) * (info->screenWidth/2))))
 		return (-1);
 	// info->barrel.a[whichray] = info->ray.m;
 	// info->barrel.c[whichray] = info->ray.n;
@@ -209,13 +209,28 @@ void negative_rays_to_tab(t_info *info)
 	
 	info->barrel.n_a[0] = 0;
 	info->barrel.n_c[0] = 0;
-	while (whichray > -(info->screenWidth))
+	while (whichray > -(info->screenWidth/2))
 	{
 		p_on_plan(info, (double)whichray);
 		ray(&info->ray, info->a, info->p_of_plan);
 		info->barrel.n_a[- whichray] = info->ray.m;
 		info->barrel.n_c[- whichray] = info->ray.n;
 		whichray--;
+	}
+}
+
+void positive_rays_to_tab(t_info *info)
+{
+	int whichray;
+
+	whichray = info->screenWidth;
+	while (whichray < (info->screenWidth + info->screenWidth/2))
+	{
+		p_on_plan(info, (double)whichray);
+		ray(&info->ray, info->a, info->p_of_plan);
+		info->barrel.a[whichray] = info->ray.m;
+		info->barrel.c[whichray] = info->ray.n;
+		whichray++;
 	}
 }
 
@@ -255,6 +270,7 @@ int rendering(t_info *info)
 		// // // // printf("a.y = %f\n", info->a.y);
 	}
 	negative_rays_to_tab(info);
+	positive_rays_to_tab(info);
 	handlesprites(info);
 	mlx_put_image_to_window(info->s.mlx, info->s.win, info->s.img, 0, 0);
 	// printf("a.x = %f\n", info->a.x);

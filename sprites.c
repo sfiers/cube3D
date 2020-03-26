@@ -44,7 +44,7 @@ int findray(t_info *info, int i, double x, double y)
 	info->barrel.pointtemp.x = x;
 	info->barrel.pointtemp.y = y;
 	//printf("pointtemp.x = %f et pointtemp.y = %f\n", info->barrel.pointtemp.x, info->barrel.pointtemp.y);
-	whichray = -(info->screenWidth - 1);
+	whichray = -(info->screenWidth/2 - 1);
 	//whichray = 0;
 	//printf("barrel.a[%d] = %f et barrel.c[%d] = %f\n", i, info->barrel.a[i], i, info->barrel.c[i]);
 	while (whichray < 0)
@@ -74,14 +74,16 @@ int findray(t_info *info, int i, double x, double y)
 	//	printf("distance = %f et distance2 = %f\n", distance, distance2);
 		if(distance < distance2)
 		{
-			// if (whichray <= -200)
+			if (whichray == - info->screenWidth/2 - 1)
+				return (whichray);
+			// if (whichray <= - (200)
 			// 	return (-200);
 			return (whichray - 1);
 		}
 		whichray++;
 	}
 	whichray = 0;
-	while (whichray < info->screenWidth - 1)
+	while (whichray < (info->screenWidth + info->screenWidth/2 - 1))
 	{
 	//	printf("info->barrel.a[%d] = %f et info->barrel.c[%d] = %f\n", whichray, info->barrel.a[whichray], whichray, info->barrel.c[whichray]);
 		// y = mx + n=> Ax + By + C = 0
@@ -98,7 +100,11 @@ int findray(t_info *info, int i, double x, double y)
 		distance2 = ft_distancepointdroite(info->barrel.pointtemp, info->barrel.droitetemp2);
 	//	printf("distance = %f et distance2 = %f\n", distance, distance2);
 		if(distance < distance2)
+		{
+			// if (whichray == info->screenWidth - 2)
+			// 	return (whichray - 1);
 			break;
+		}
 		whichray++;
 	}
 	//info->barrel.startray = (info->barrel.reverse == 0 ? whichray - 1 : info->barrel.startray);
@@ -116,6 +122,8 @@ int findray(t_info *info, int i, double x, double y)
 	// 	// printf("startdrawx1[%d] = %f et startdrawy1[%d] = %f\n", i, info->barrel.startdrawx[i], i, info->barrel.startdrawy[i]);
 	// 	findray(info, i, info->barrel.startdrawx[i], info->barrel.startdrawy[i]);
 	// }
+	if (whichray == info->screenWidth + info->screenWidth/2 - 1)
+		return (whichray);
 	return (whichray - 1);
 }
 
