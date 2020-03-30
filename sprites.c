@@ -68,7 +68,7 @@ int findray(t_info *info, int i, double x, double y)
 		whichray++;
 	}
 	info->barrel.startray = (info->barrel.reverse == 0 ? whichray - 1 : info->barrel.startray);
-	printf("startray = %d\n", info->barrel.startray);
+	//printf("startray = %d\n", info->barrel.startray);
 	// if (info->barrel.startray == -1)
 	// 	info->barrel.startray = info->screenWidth - 1;
 	info->barrel.endray = (info->barrel.reverse == 0 ? whichray - 1: info->barrel.endray);
@@ -81,6 +81,7 @@ int findray(t_info *info, int i, double x, double y)
 		// printf("plandir.x1 = %f et plandir.y1 = %f\n", info->barrel.spriteplandir.x, info->barrel.spriteplandir.y);
 		// printf("startdrawx1[%d] = %f et startdrawy1[%d] = %f\n", i, info->barrel.startdrawx[i], i, info->barrel.startdrawy[i]);
 		info->barrel.endray = findray(info, i, info->barrel.startdrawx[i], info->barrel.startdrawy[i]);
+		printf("endray = %d\n", info->barrel.endray);
 	}
 	return (whichray - 1);
 }
@@ -112,25 +113,28 @@ void handlesprites(t_info *info)
 	distance_2_sprite(info); // distance entre le centre de chaque sprite et la joueur
 	ft_sort_sprites(info); // tri les distances du + loin au + proche 
 	//printf ("nbsprite = %d\n",  info->nbsprite);
+	printf("coucou\n");
 	while (i < info->nbsprite)
 	{	
 		info->barrel.endray = 0;
 		initialise(info, i);
 		if (fabs(info->barrel.spriteangle - info->angle) < 90 || fabs(info->barrel.spriteangle - info->angle) > 270)
 		{	
-			info->barrel.pointtemp.x = 0;
-			info->barrel.pointtemp.y = 0;
-			info->barrel.middleray = findray(info, i, info->barrel.x[i], info->barrel.y[i]);
-			printf("middleray = %d\n", info->barrel.middleray);
-			info->barrel.middleray = (info->barrel.middleray < 0 ? 0 : info->barrel.middleray);
-			info->barrel.middleray = (info->barrel.middleray >= info->screenWidth ? info->screenWidth : info->barrel.middleray);
-			info->barrel.height = walls(info, info->barrel.distance[i], info->barrel.middleray);
+			// info->barrel.pointtemp.x = 0;
+			// info->barrel.pointtemp.y = 0;
+			//info->barrel.middleray = findray(info, i, info->barrel.x[i], info->barrel.y[i]);
+			//printf("middleray = %d\n", info->barrel.middleray);
+			//info->barrel.middleray = (info->barrel.middleray < 0 ? 0 : info->barrel.middleray);
+			//info->barrel.middleray = (info->barrel.middleray >= info->screenWidth ? info->screenWidth : info->barrel.middleray);
+			//info->barrel.height = walls(info, info->barrel.distance[i], info->barrel.middleray);
+			info->barrel.height = projected_slice_hight(info, info->barrel.distance[i]);
+			//info->barrel.height *= 2;
 			//nb_ray(info, i);
 			seekdrawstart(info, i);
 			//info->barrel.middleray = findray(info, i, info->barrel.x[i], info->barrel.y[i]);
 			//info->barrel.startray = info->barrel.middleray - (info->barrel.ray_nb/2);
 			info->barrel.startray = findray(info, i, info->barrel.startdrawx[i], info->barrel.startdrawy[i]);
-			printf ("info->barrel.startray = %d\n",  info->barrel.startray);
+			//printf ("info->barrel.startray = %d\n",  info->barrel.startray);
 			//info->barrel.height = projected_slice_hight(info, info->barrel.distance[i]);
 			info->barrel.startray >= 0 ? print_sprite(info, i) : print_sprite_reverse(info, i);
 			// if (info->barrel.startray >= 0)
@@ -173,7 +177,7 @@ void print_sprite(t_info *info, int i)
 	info->tex_x = 0;
 	info->tex_y = 0;
 	whichray = info->barrel.startray;
-//	printf("whichray = %d\n", whichray);
+	printf("startray = %d\n", whichray);
 	while (info->tex_x < 64 && whichray < info->screenWidth)
 	{
 	//	printf("tex_x = %f\n", info->tex_x);
@@ -204,7 +208,7 @@ void print_sprite(t_info *info, int i)
 		whichray++;
 	}
 	//info->barrel.lastray = whichray - 1;
-	//printf("whichray = %d\n", whichray - 1);
+	printf("lastray = %d\n", whichray - 1);
 }
 
 // void nb_ray(t_info *info, int i)
@@ -244,7 +248,7 @@ void print_sprite_reverse(t_info *info, int i)
 	info->tex_x = 63;
 	info->tex_y = 0;
 	whichray = info->barrel.endray;
-	printf("whichray = %d\n", whichray);
+	//printf("endray = %d\n", whichray);
 	while (info->tex_x >= 0 && whichray >= 0)
 	{
 	//	printf("tex_x = %f\n", info->tex_x);

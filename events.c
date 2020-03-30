@@ -43,11 +43,11 @@ int             ft_angle(int keycode, t_info *info)
     // 360 deg done in 2 seconds while button is pressed = 0,0055555555 sec per deg
     if (keycode == 123)
 	{
-    	(info->angle) += 5; // motion(info, RIGHT); doit encore etre implémenté si nécessaire
+    	(info->angle) += 2; // motion(info, RIGHT); doit encore etre implémenté si nécessaire
 	}
 	if (keycode == 124)
 	{
-    	(info->angle) -= 5; // motion(info, LEFT);
+    	(info->angle) -= 2; // motion(info, LEFT);
 		if (info->angle < 0)
 			info->angle = 360 + info->angle;
 	}
