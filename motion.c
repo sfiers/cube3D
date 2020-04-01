@@ -95,7 +95,8 @@ int inside_map(t_info *info, t_map coordinates)
 
 int avoid_wall(t_map coordinates, t_info *info)
 {
-	if (info->worldMap[(mapWidth - 1) - coordinates.y][coordinates.x] != 1) // 1 for Wall maybe there are other checks afterwards that need to be done
+	//if (info->worldMap[(mapWidth - 1) - coordinates.y][coordinates.x] != 1) // 1 for Wall maybe there are other checks afterwards that need to be done
+	if ((info->worldMap[(mapWidth - 1) - coordinates.y][coordinates.x] != 1) && (info->worldMap[(mapWidth - 1) - coordinates.y][coordinates.x] != 2))
 		return (1);
 	return(0);
 }

@@ -1,19 +1,22 @@
 #include "wolf.h"
 
-void fill_info(t_info *info)
+void fill_info(t_info *info, t_maptab *tab)
 {
 	info->tex_x = 0; //************new
 //info->count_x = 0; //**********new
 	info->blocksize = 64;
-	info->screenWidth = 1600;
-	info->screenHeight = 900;
+	info->screenwidth = 1600;
+	info->screenheight = 900;
+	info->mapwidth = tab->len_max;
+	info->mapheight = tab->counter;
+//printf("mapwidth = %d et mapheight = %d\n", info->mapwidth, info->mapheight);
 	info->pov = 66;
 	info->a.x = 160;
-	info->a.y = 160;
-	info->angle = 0; // link to input NESW
+	info->a.y = 96;
+	info->angle = 90; // link to input NESW
 	info->a.z = 32; // retirer ???
 	info->bad = info->pov/2;
-	info->bd = info->screenWidth / 2;
+	info->bd = info->screenwidth / 2;
 	info->ad = toa(info->bad, info->bd);
 	info->dir.x = cos(ft_deg2rad(info->angle)) * info->ad;
 	info->dir.y = sin(ft_deg2rad(info->angle)) * info->ad;
@@ -47,7 +50,7 @@ void update_info(t_info *info)
 
 void	mlx_put_in_img(t_info *info, int x, int y, int color)
 {
-	info->s.data[((int)info->screenWidth) * y + x] = color;
+	info->s.data[((int)info->screenwidth) * y + x] = color;
 }
 
 // t_s		*create_image(t_info *info, int x, int y)
@@ -76,8 +79,8 @@ void	ft_display(t_info *info, int whichray, double wall_hight) // probablenent s
 	info->tex_y = 0;
 	//info->count_y = 0;
 	ratio = 64/wall_hight;
-	if (wall_hight > info->screenHeight)
-		info->tex_y = ((wall_hight - info->screenHeight) / 2) * ratio;
+	if (wall_hight > info->screenheight)
+		info->tex_y = ((wall_hight - info->screenheight) / 2) * ratio;
 	if (info->side == 1)
 	{
 		if ((rest = info->wall[0] % 64) != 0)
@@ -98,7 +101,7 @@ void	ft_display(t_info *info, int whichray, double wall_hight) // probablenent s
 	// printf("distance = %f\n", distance);
 	// printf("whichray = %d\n", whichray);
 	// printf("ratio = %f\n", ratio);
-	wall_down = (info->screenHeight - wall_hight) / 2;
+	wall_down = (info->screenheight - wall_hight) / 2;
 	// put_texture(info);
 	nesw(info);
 	if (info->nesw == 0)
@@ -109,11 +112,12 @@ void	ft_display(t_info *info, int whichray, double wall_hight) // probablenent s
 		texture = info->so.data;
 	else
 		texture = info->we.data;
-	while (y < info->screenHeight)
+	while (y < info->screenheight)
 	{
-		while (y < info->screenHeight && y < wall_down) //plafond
+		while (y < info->screenheight && y < wall_down) //plafond
 			mlx_put_in_img(info, whichray, y++, 0x87ceff);
-		while (y < info->screenHeight && y < (wall_down + wall_hight)) //mur
+			//mlx_put_in_img(info, whichray, y++,info->trgb_ceiling);
+		while (y < info->screenheight && y < (wall_down + wall_hight)) //mur
 		{
 			info->tex_y = info->tex_y + ratio;
 			if ((int)info->tex_y >= 64)
@@ -125,8 +129,9 @@ void	ft_display(t_info *info, int whichray, double wall_hight) // probablenent s
 			mlx_put_in_img(info, whichray, y++, color);
 			//mlx_put_in_img(info, whichray, y++, 0xcd853f);
 		}
-		if (y < info->screenHeight)
+		if (y < info->screenheight)
 			mlx_put_in_img(info, whichray, y++, 0x54ff9f);  //sol
+			//mlx_put_in_img(info, whichray, y++, info->trgb_floor);
 	}
 }
 
@@ -150,8 +155,8 @@ void put_texture(t_info *info)
 
 // void fill_static(t_info *info)
 // {
-// 	static double barrel_a[info->screenWidth];
-// 	static double barrel_c[info->screenWidth];
+// 	static double barrel_a[info->screenwidth];
+// 	static double barrel_c[info->screenwidth];
 // }
 
 int main()
@@ -160,16 +165,18 @@ int main()
 	t_maptab tab;
 	t_error error;
 	t_sprites barrel;
+	//t_element elem;
 
 	parsing(&tab, &info);
 	info.worldMap = tab.tab;
-	fill_info(&info);
+	//parsing2(&elem, &info);
+	fill_info(&info, &tab);
 	//fill_static(&info);
 	info.s.mlx = mlx_init();
 // 	all->fractal.img = mlx_new_image(all->wdw.mlx_ptr, W_SIZE_X, W_SIZE_Y);
 // all->fractal.data = (int *)mlx_get_data_addr(all->fractal.img, &all->fractal.bpp, &all->fractal.size, &all->fractal.a);
-   	info.s.win = mlx_new_window(info.s.mlx, info.screenWidth, info.screenHeight, "Cube3D");
-	info.s.img = mlx_new_image(info.s.mlx, info.screenWidth, info.screenHeight);
+   	info.s.win = mlx_new_window(info.s.mlx, info.screenwidth, info.screenheight, "Cube3D");
+	info.s.img = mlx_new_image(info.s.mlx, info.screenwidth, info.screenheight);
 	info.s.data = (int *)mlx_get_data_addr(info.s.img, &info.s.bpp, &info.s.size, &info.s.a);
 	rendering(&info);
 	// mlx_put_image_to_window(s.mlx, s.win, s.img, info.screenWidth, info.screenHeight);
@@ -184,11 +191,11 @@ int main()
 
 int saveintab(t_info *info, int whichray)
 {
-	if (!(info->barrel.walldistance = malloc(sizeof(double) * (info->screenWidth))))
+	if (!(info->barrel.walldistance = malloc(sizeof(double) * (info->screenwidth))))
 		return (-1);
-	if (!(info->barrel.a = malloc(sizeof(double) * (info->screenWidth))))
+	if (!(info->barrel.a = malloc(sizeof(double) * (info->screenwidth))))
 		return (-1);
-	if (!(info->barrel.c = malloc(sizeof(double) * (info->screenWidth))))
+	if (!(info->barrel.c = malloc(sizeof(double) * (info->screenwidth))))
 		return (-1);
 	// info->barrel.a[whichray] = info->ray.m;
 	// info->barrel.c[whichray] = info->ray.n;
@@ -209,7 +216,7 @@ int rendering(t_info *info)
 	// mlx_clear_window(info->s.mlx, info->s.win); don t clear with image
 	put_texture(info);
 	saveintab(info, whichray);
-	while(whichray < info->screenWidth)
+	while(whichray < info->screenwidth)
 	{
 		// printf("------------------ray = %d\n", whichray);
 		update_info(info);
@@ -242,8 +249,8 @@ int rendering(t_info *info)
 
 void p_on_plan(t_info *info, double whichray)
 {
-	info->p_of_plan.x = info->b.x - (whichray * (info->b.x - info->c.x) / info->screenWidth); 
-	info->p_of_plan.y = info->b.y - (whichray * (info->b.y - info->c.y) / info->screenWidth);
+	info->p_of_plan.x = info->b.x - (whichray * (info->b.x - info->c.x) / info->screenwidth); 
+	info->p_of_plan.y = info->b.y - (whichray * (info->b.y - info->c.y) / info->screenwidth);
 }
 
 void test_x_axis(t_info *info)

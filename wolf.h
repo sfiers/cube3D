@@ -156,6 +156,8 @@ typedef struct      s_sprites
 	t_p spriteplandir;
 	double startdrawx[mapWidth*mapHeight];
 	double startdrawy[mapWidth*mapHeight];
+	double enddrawx[mapWidth*mapHeight];
+	double enddrawy[mapWidth*mapHeight];
 	int startray;
 	double height;
 	double ab[mapWidth*mapHeight];
@@ -176,18 +178,20 @@ typedef struct      s_sprites
 	int reverse;
 	int middleray;
 	int ray_nb;
+
 	// float rayseekm;
 }				    t_sprites;
 
 typedef struct      s_info
 {
 	int **worldMap;
-	int sptab[mapHeight*mapWidth*2];
 	double blocksize;
+	int mapwidth;
+	int mapheight;
 	double angle;
-	int wallx; // retirer >???
-	int		screenWidth;
-	int		screenHeight;
+	int wallx;
+	int		screenwidth;
+	int		screenheight;
 	int		trgb_ceiling;
 	int		trgb_floor;
 	double tex_y; //*********new
@@ -333,7 +337,7 @@ void sprite(t_info *info, int n);
 **  MAP ----------------
 */
 
-void fill_info(t_info *info);
+void fill_info(t_info *info, t_maptab *tab);
 int	parsing(t_maptab *tab, t_info *info);
 int			first_string(t_maptab *tab, t_info *info);
 void		put_error(t_error *error);
@@ -427,6 +431,10 @@ int findray(t_info *info, int i, double x, double y);
 void print_sprite(t_info *info, int i);
 void print_sprite_reverse(t_info *info, int i);
 void nb_ray(t_info *info, int i);
+int findmiddleray(t_info *info, int i, double x, double y);
+//void seekdrawend(t_info *info, int i);
+double spriteheight(t_info *info, double distance);
+double fishbowlsprite(t_info *info, double distorted_distance);
 
 
 /*

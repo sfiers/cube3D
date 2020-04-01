@@ -6,7 +6,7 @@
 /*   By: lduhamel <lduhamel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/13 13:18:04 by lduhamel          #+#    #+#             */
-/*   Updated: 2020/02/25 18:37:03 by lduhamel         ###   ########.fr       */
+/*   Updated: 2020/03/31 18:36:06 by lduhamel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,49 +19,49 @@ int is_digit(char c)
 	return(c >= '0' && c <= '9' ? 1 : 0);
 }
 
-char	*ft_strdup1(char *s1)
-{
-	char	*ptr;
-	int		i;
+// char	*ft_strdup1(char *s1)
+// {
+// 	char	*ptr;
+// 	int		i;
 
-	if (!s1 || !(ptr = (char*)malloc(sizeof(char) * (ft_strlen1(s1) + 1))))
-		return (NULL);
-	i = 0;
-	while (s1[i])
-	{
-		ptr[i] = s1[i];
-		i++;
-	}
-	ptr[i] = '\0';
-	return (ptr);
-}
+// 	if (!s1 || !(ptr = (char*)malloc(sizeof(char) * (ft_strlen1(s1) + 1))))
+// 		return (NULL);
+// 	i = 0;
+// 	while (s1[i])
+// 	{
+// 		ptr[i] = s1[i];
+// 		i++;
+// 	}
+// 	ptr[i] = '\0';
+// 	return (ptr);
+// }
 
-int		ft_strlen1(char *s)
-{
-	int i;
+// int		ft_strlen1(char *s)
+// {
+// 	int i;
 
-	i = 0;
-	if (s == NULL)
-		return (0);
-	while (s[i] != '\0')
-		i++;
-	printf("i = %d\n", i);
-	return(i);
-}
+// 	i = 0;
+// 	if (s == NULL)
+// 		return (0);
+// 	while (s[i] != '\0')
+// 		i++;
+// 	printf("i = %d\n", i);
+// 	return(i);
+// }
 
-void	ft_putstr1(char *s)
-{
-	int i;
+// void	ft_putstr1(char *s)
+// {
+// 	int i;
 
-	i = 0;
-	if (s == NULL)
-		return ;
-	while (s[i] != '\0')
-	{
-		write(1, &s[i], 1);
-		i++;
-	}
-}
+// 	i = 0;
+// 	if (s == NULL)
+// 		return ;
+// 	while (s[i] != '\0')
+// 	{
+// 		write(1, &s[i], 1);
+// 		i++;
+// 	}
+// }
 
 void		put_error1(t_element *elem)
 {
@@ -126,8 +126,8 @@ int resolution(t_element *elem, t_info *info)
 			return (-3);
 		else if (is_digit(elem->line[elem->i]))
 		{
-			info->screenWidth = (elem->flag == 0 ? atoi_v1(elem) : info->screenWidth);
-			info->screenHeight = (elem->flag == 1 ? atoi_v1(elem) : info->screenHeight);
+			info->screenwidth = (elem->flag == 0 ? atoi_v1(elem) : info->screenwidth);
+			info->screenheight = (elem->flag == 1 ? atoi_v1(elem) : info->screenheight);
 			elem->flag++;
 		}
 		else if (elem->line[elem->i] != ' ')
@@ -135,10 +135,10 @@ int resolution(t_element *elem, t_info *info)
 		elem->i++;
 	}
 	return (elem->flag == 2 ? 1 : -2);
-	info->screenWidth = (info->screenWidth > 3200 ? 3200 : info->screenWidth);
-	info->screenWidth = (info->screenWidth < 320 ? 320 : info->screenWidth);
-	info->screenHeight = (info->screenHeight > 1800 ? 1800 : info->screenHeight);
-	info->screenHeight = (info->screenHeight < 200 ? 200 : info->screenHeight);
+	info->screenwidth = (info->screenwidth > 3200 ? 3200 : info->screenwidth);
+	info->screenwidth = (info->screenwidth < 320 ? 320 : info->screenwidth);
+	info->screenheight = (info->screenheight > 1800 ? 1800 : info->screenheight);
+	info->screenheight = (info->screenheight < 200 ? 200 : info->screenheight);
 	return (1);
 }
 
@@ -291,8 +291,8 @@ int read_elem(t_element *elem, t_info *info)
 		if (elem->line[elem->i] == 'E' && elem->line[elem->i+1] == 'A')
 			texture(elem, info, elem->texture_ea);
 
-		// printf("ceiling = %p\n", info->trgb_ceiling);
-		// printf("floor = %p\n", info->trgb_floor);
+		printf("ceiling = %p\n", info->trgb_ceiling);
+		printf("floor = %p\n", info->trgb_floor);
 	}
 	return (0);
 }
@@ -311,14 +311,14 @@ int	parsing2(t_element *elem, t_info *info)
 }
 
 
-int main()
-{
-	t_element	elem;
-	t_info		info;
-	if (parsing2(&elem, &info) == -1)
-		return (-1);
-	// while(1)
-	// {
-	// 	tab.len_tab = 0;
-	// }
-}
+// int main()
+// {
+// 	t_element	elem;
+// 	t_info		info;
+// 	if (parsing2(&elem, &info) == -1)
+// 		return (-1);
+// 	// while(1)
+// 	// {
+// 	// 	tab.len_tab = 0;
+// 	// }
+// }

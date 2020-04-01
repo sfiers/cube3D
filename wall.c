@@ -27,12 +27,12 @@ double fishbowl(t_info *info, double distorted_distance, int whichray)
 	double angle_offset;
 	double corrected_distance;
 
-	angle_offset = info->pov / info->screenWidth;
+	angle_offset = info->pov / info->screenwidth;
 	// // // // printf("angle_offset = %f\n", angle_offset);
-	if (whichray < (int)(info->screenWidth / 2))
+	if (whichray < (int)(info->screenwidth / 2))
 		corrected_distance = distorted_distance * cos(ft_deg2rad((info->pov / 2) - (whichray * angle_offset)));
 	else
-		corrected_distance = distorted_distance * cos(ft_deg2rad(((whichray - (info->screenWidth / 2)) * angle_offset)));
+		corrected_distance = distorted_distance * cos(ft_deg2rad(((whichray - (info->screenwidth / 2)) * angle_offset)));
 	return (corrected_distance);
 }
 
