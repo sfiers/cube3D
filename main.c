@@ -77,7 +77,6 @@ void	ft_display(t_info *info, int whichray, double wall_hight) // probablenent s
 
 	y = 0;
 	info->tex_y = 0;
-	//info->count_y = 0;
 	ratio = 64/wall_hight;
 	if (wall_hight > info->screenheight)
 		info->tex_y = ((wall_hight - info->screenheight) / 2) * ratio;
@@ -95,12 +94,6 @@ void	ft_display(t_info *info, int whichray, double wall_hight) // probablenent s
 		else
 			info->tex_x = 0;
 	}
-	// printf("side = %d\n", info->side);
-	// printf("wall[0] = %d\n", info->wall[0]);
-	// printf("wall[1] = %d\n", info->wall[1]);
-	// printf("distance = %f\n", distance);
-	// printf("whichray = %d\n", whichray);
-	// printf("ratio = %f\n", ratio);
 	wall_down = (info->screenheight - wall_hight) / 2;
 	// put_texture(info);
 	nesw(info);
@@ -152,12 +145,6 @@ void put_texture(t_info *info)
 	info->sp.ptr = mlx_xpm_file_to_image(info->s.mlx, "./barrel.xpm", &size, &size);
 	info->sp.data = (int *)mlx_get_data_addr(info->sp.ptr, &info->sp.bpp, &info->sp.size, &info->sp.a);
 }
-
-// void fill_static(t_info *info)
-// {
-// 	static double barrel_a[info->screenwidth];
-// 	static double barrel_c[info->screenwidth];
-// }
 
 int main()
 {
@@ -413,20 +400,4 @@ void nesw(t_info *info)
 	if (info->side == 1) 
 		info->nesw = (info->a.y < info->p_of_plan.y) ? 0 : 2;
 	return;
-}
-
-void print(t_info *info)
-{
-	// // // printf("info->b.x = %f\n", info->b.x);
-	// // // printf("info->b.y = %f\n", info->b.y);
-	// // // printf("info->a.x = %f\n", info->a.x);
-	// // // printf("info->a.y = %f\n", info->a.y);
-	// // // printf("info.dir.x = %f\n", info->dir.x);
-	// // // printf("info.dir.y = %f\n", info->dir.y);
-	// // // printf("info->plan.x = %f\n", info->plan.x);
-	// // // printf("info->plan.y = %f\n", info->plan.y);		
-	// // // printf("p_of_plan.x = %f\n", info->p_of_plan.x);
-	// // // printf("p_of_plan.y = %f\n", info->p_of_plan.y);
-	// // // printf("info->ray.m = %f\n", info->ray.m);
-	// // // printf("info->ray.n = %f\n", info->ray.n);
 }

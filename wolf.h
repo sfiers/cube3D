@@ -148,16 +148,12 @@ typedef struct      s_droite
 
 typedef struct      s_sprites
 {
-	//int nbsprite;
 	double distance[mapWidth*mapHeight];
 	double x[mapWidth*mapHeight];
 	double y[mapWidth*mapHeight];
-	//double seensprites[whichray][mapWidth*mapHeight];
 	t_p spriteplandir;
 	double startdrawx[mapWidth*mapHeight];
 	double startdrawy[mapWidth*mapHeight];
-	double enddrawx[mapWidth*mapHeight];
-	double enddrawy[mapWidth*mapHeight];
 	int startray;
 	double height;
 	double ab[mapWidth*mapHeight];
@@ -175,11 +171,9 @@ typedef struct      s_sprites
 	double		*c;
 	double spriteangle;
 	int endray;
-	int reverse;
 	int middleray;
-	int ray_nb;
-
-	// float rayseekm;
+	double color;
+	int ystart;
 }				    t_sprites;
 
 typedef struct      s_info
@@ -321,7 +315,6 @@ typedef struct	mlx_ptr_s
 ** -----------------------------------------------------------------------------
 */
 
-void print(t_info *info); // delete this crap
 int hit_map(t_info *info, int n);
 double distance_to_wall(t_info *info);
 void test_x_axis(t_info *info);
@@ -428,16 +421,11 @@ void ft_sort_sprites(t_info *info);
 void initialise(t_info *info, int i);
 void seekdrawstart(t_info *info, int i);
 int findray(t_info *info, int i, double x, double y);
-void print_sprite(t_info *info, int i);
-void print_sprite_reverse(t_info *info, int i);
-void nb_ray(t_info *info, int i);
-int findmiddleray(t_info *info, int i, double x, double y);
-//void seekdrawend(t_info *info, int i);
 double spriteheight(t_info *info, double distance);
 double fishbowlsprite(t_info *info, double distorted_distance);
 void print_sprite_middle(t_info *info, int i);
-void print_sprite_left(t_info *info, int i);
-void print_sprite_right(t_info *info, int i);
+void print_sprite_left(t_info *info, int i, int whichray, double tex_x);
+void print_sprite_right(t_info *info, int i, int whichray, double tex_x);
 
 
 /*
