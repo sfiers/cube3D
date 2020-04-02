@@ -435,6 +435,9 @@ int findmiddleray(t_info *info, int i, double x, double y);
 //void seekdrawend(t_info *info, int i);
 double spriteheight(t_info *info, double distance);
 double fishbowlsprite(t_info *info, double distorted_distance);
+void print_sprite_middle(t_info *info, int i);
+void print_sprite_left(t_info *info, int i);
+void print_sprite_right(t_info *info, int i);
 
 
 /*

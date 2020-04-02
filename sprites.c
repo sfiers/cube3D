@@ -86,45 +86,43 @@ int findray(t_info *info, int i, double x, double y)
 	//	info->barrel.endray = findray(info, i, info->barrel.startdrawx[i], info->barrel.startdrawy[i]);
 	//	printf("endray = %d\n", info->barrel.endray);
 //	}
+	if (whichray == info->screenwidth - 1)
+		return (whichray);
 	return (whichray - 1);
 }
 
-int findmiddleray(t_info *info, int i, double x, double y)
-{
-	double distance;
-	double distance2;
-	int whichray;
+// int findmiddleray(t_info *info, int i, double x, double y)
+// {
+// 	double distance;
+// 	double distance2;
+// 	int whichray;
 
-	// info->barrel.pointtemp.x = info->barrel.startdrawx[i];
-	// info->barrel.pointtemp.y = info->barrel.startdrawy[i];
-	info->barrel.pointtemp.x = x;
-	info->barrel.pointtemp.y = y;
-	//printf("pointtemp.x = %f et pointtemp.y = %f\n", info->barrel.pointtemp.x, info->barrel.pointtemp.y);
-	//whichray = -(info->screenwidth/2);
-	whichray = 0;
-	//printf("barrel.a[%d] = %f et barrel.c[%d] = %f\n", i, info->barrel.a[i], i, info->barrel.c[i]);
-	while (whichray < info->screenwidth - 1)
-	{
-	//	printf("info->barrel.a[%d] = %f et info->barrel.c[%d] = %f\n", whichray, info->barrel.a[whichray], whichray, info->barrel.c[whichray]);
-		// y = mx + n=> Ax + By + C = 0
-		info->barrel.droitetemp.a = info->barrel.a[whichray] ; // m
-		//droitetemp.b = info->barrel.b[whichray]; // -1
-		info->barrel.droitetemp.b = -1; // -1
-		//info->barrel.droitetemp.c = barrel_c[whichray]; // n
-		info->barrel.droitetemp.c = info->barrel.c[whichray];
-		info->barrel.droitetemp2.a = info->barrel.a[whichray + 1];
-		//info->barrel.droitetemp2.b = info->barrel.b[whichray + 1];
-		info->barrel.droitetemp2.b = -1;
-		info->barrel.droitetemp2.c = info->barrel.c[whichray + 1];
-		distance = ft_distancepointdroite(info->barrel.pointtemp, info->barrel.droitetemp);
-		distance2 = ft_distancepointdroite(info->barrel.pointtemp, info->barrel.droitetemp2);
-	//	printf("distance = %f et distance2 = %f\n", distance, distance2);
-		if (distance < distance2)
-			break;
-		whichray++;
-	}
-	return (whichray - 1);
-}
+// 	info->barrel.pointtemp.x = x;
+// 	info->barrel.pointtemp.y = y;
+// 	whichray = 0;
+// 	//printf("barrel.a[%d] = %f et barrel.c[%d] = %f\n", i, info->barrel.a[i], i, info->barrel.c[i]);
+// 	while (whichray < info->screenwidth - 1)
+// 	{
+// 	//	printf("info->barrel.a[%d] = %f et info->barrel.c[%d] = %f\n", whichray, info->barrel.a[whichray], whichray, info->barrel.c[whichray]);
+// 		// y = mx + n=> Ax + By + C = 0
+// 		info->barrel.droitetemp.a = info->barrel.a[whichray] ; // m
+// 		//droitetemp.b = info->barrel.b[whichray]; // -1
+// 		info->barrel.droitetemp.b = -1; // -1
+// 		//info->barrel.droitetemp.c = barrel_c[whichray]; // n
+// 		info->barrel.droitetemp.c = info->barrel.c[whichray];
+// 		info->barrel.droitetemp2.a = info->barrel.a[whichray + 1];
+// 		//info->barrel.droitetemp2.b = info->barrel.b[whichray + 1];
+// 		info->barrel.droitetemp2.b = -1;
+// 		info->barrel.droitetemp2.c = info->barrel.c[whichray + 1];
+// 		distance = ft_distancepointdroite(info->barrel.pointtemp, info->barrel.droitetemp);
+// 		distance2 = ft_distancepointdroite(info->barrel.pointtemp, info->barrel.droitetemp2);
+// 	//	printf("distance = %f et distance2 = %f\n", distance, distance2);
+// 		if (distance < distance2)
+// 			break;
+// 		whichray++;
+// 	}
+// 	return (whichray - 1);
+// }
 
 // void handlesprites(t_sprites *barrel, t_info *info)
 // {
@@ -147,7 +145,6 @@ void handlesprites(t_info *info)
 	int i;
 
 	i = 0;
-	//int raynb;
 	info->barrel.reverse = 0;
 	distance_2_sprite(info); // distance entre le centre de chaque sprite et la joueur
 	ft_sort_sprites(info); // tri les distances du + loin au + proche 
@@ -155,32 +152,138 @@ void handlesprites(t_info *info)
 	while (i < info->nbsprite)
 	{	
 		info->barrel.endray = 0;
-		//info->barrel.height = projected_slice_hight(info, info->barrel.distance[i]);
-		//info->barrel.height = spriteheight(info, info->barrel.distance[i]);
-		//seekdrawend(info, i);
 		initialise(info, i);
 		info->barrel.height = spriteheight(info, info->barrel.distance[i]);
 		if (fabs(info->barrel.spriteangle - info->angle) < 90 || fabs(info->barrel.spriteangle - info->angle) > 270)
 		{	
 			seekdrawstart(info, i);
-			//seekdrawend(info, i);
-			info->barrel.middleray = findmiddleray(info, i, info->barrel.x[i], info->barrel.y[i]);
+			info->barrel.middleray = findray(info, i, info->barrel.x[i], info->barrel.y[i]);
 			printf ("info->barrel.middleray = %d\n",  info->barrel.middleray);
 			info->barrel.startray = findray(info, i, info->barrel.startdrawx[i], info->barrel.startdrawy[i]);
 			printf ("info->barrel.startray = %d\n",  info->barrel.startray);
-			info->barrel.spriteplandir.x = cos(ft_deg2rad(info->angle + 90)) * info->blocksize/2;
-			info->barrel.spriteplandir.y = sin(ft_deg2rad(info->angle + 90)) * info->blocksize/2;
-			printf("info->angle = %f\n", info->angle);
-			info->barrel.startdrawx[i] = info->barrel.x[i] - info->barrel.spriteplandir.x;
-	 		info->barrel.startdrawy[i] = info->barrel.y[i] - info->barrel.spriteplandir.y;
-			printf("end spriteplandir1.x = %f et end spriteplandir1.y = %f\n", info->barrel.spriteplandir.x, info->barrel.spriteplandir.y);
-			printf("enddraw[%d] = %f et enddrawy[%d] = %f\n", i, info->barrel.startdrawx[i], i, info->barrel.startdrawy[i]);
-			info->barrel.endray = findray(info, i, info->barrel.startdrawx[i], info->barrel.startdrawy[i]);
-			printf("endray = %d\n", info->barrel.endray);
-			info->barrel.startray >= 0 ? print_sprite(info, i) : print_sprite_reverse(info, i);
+			if (info->barrel.startray < 0)
+			{
+				info->barrel.startdrawx[i] = info->barrel.x[i] - info->barrel.spriteplandir.x;
+	 			info->barrel.startdrawy[i] = info->barrel.y[i] - info->barrel.spriteplandir.y;
+				info->barrel.endray = findray(info, i, info->barrel.startdrawx[i], info->barrel.startdrawy[i]);
+				printf("endray = %d\n", info->barrel.endray);
+				info->barrel.endray == info->screenwidth - 1 ? print_sprite_middle(info, i) : print_sprite_reverse(info, i);
+			}
+			else
+				print_sprite(info, i);
 		}
 		i++;
 	}
+}
+
+void print_sprite_middle(t_info *info, int i)
+{
+	print_sprite_right(info, i);
+	print_sprite_left(info, i);
+}
+
+void print_sprite_left(t_info *info, int i)
+{
+	int whichray;
+	int y;
+	double ratio;
+	double color;
+	int start;
+
+	//printf("hauteur[%d] = %f\n", i, info->barrel.distance[i]);
+	start = (info->screenheight - info->barrel.height)/2;
+	y = start;
+	//printf("y = %d\n", y);
+	//ratio = 64/info->barrel.height;
+	ratio = 0;
+	//printf("ratio = %f\n", ratio);
+	whichray = info->barrel.middleray;
+	info->tex_x = 31;
+	info->tex_y = 0;
+	//printf("endray = %d\n", whichray);
+	while (info->tex_x >= 0 && whichray >= 0)
+	{
+	//	printf("tex_x = %f\n", info->tex_x);
+		while (y < info->screenheight && y < (start + info->barrel.height) && whichray >= 0)
+		{
+		//	printf("y = %d\n", y);
+			info->tex_y = info->tex_y + ratio;
+			// printf("y = %d\n", y);
+		//	 printf("tex_y + ratio = %f\n", (info->tex_y + ratio)); 
+		//	printf("walldistance[%d] = %f et distance[%d] = %f\n", whichray, info->barrel.walldistance[whichray], i, info->barrel.distance[i]);
+			if ((int)info->tex_y >= 64)
+				break;
+			//printf("tex_y + ratio = %f\n", (info->tex_y + ratio));
+			if (info->barrel.walldistance[whichray] > info->barrel.distance[i])
+			{
+				if ((info->sp.data[(int)info->tex_x + (int)info->tex_y * 64]) != 0)
+					color = info->sp.data[(int)info->tex_x + (int)info->tex_y * 64];
+				
+			//printf("tex_x = %d et tex_y = %d\n", (int)info->tex_x, (int)info->tex_y);
+			}
+			if ((info->sp.data[(int)info->tex_x + (int)info->tex_y * 64]) != 0 && info->barrel.walldistance[whichray] > info->barrel.distance[i])
+				mlx_put_in_img(info, whichray, y, color);
+			y++;
+			ratio = 64/info->barrel.height;
+		}
+		info->tex_y = 0;
+		y = start;
+		info->tex_x -= ratio;
+		whichray--;
+	}
+	printf("firstray = %d\n", whichray + 1);
+}
+
+void print_sprite_right(t_info *info, int i)
+{
+	int whichray;
+	int y;
+	double ratio;
+	double color;
+	int start;
+
+	start = (info->screenheight - info->barrel.height)/2;
+	y = start;
+	//printf("y = %d\n", y);
+	//ratio = 64/info->barrel.height;
+	ratio = 0;
+	//printf("ratio = %f\n", ratio);
+	whichray = info->barrel.middleray;
+	info->tex_y = 0;
+	info->tex_x = 31;
+	//printf("startray = %d\n", whichray);
+	while (info->tex_x < 64 && whichray < info->screenwidth)
+	{
+	//	printf("tex_x = %f\n", info->tex_x);
+		while (y < info->screenheight && y < (start + info->barrel.height) && whichray < info->screenwidth)
+		{
+		//	printf("y = %d\n", y);
+			info->tex_y = info->tex_y + ratio;
+			// printf("y = %d\n", y);
+		//	 printf("tex_y + ratio = %f\n", (info->tex_y + ratio)); 
+		//	printf("walldistance[%d] = %f et distance[%d] = %f\n", whichray, info->barrel.walldistance[whichray], i, info->barrel.distance[i]);
+			if ((int)info->tex_y >= 64)
+				break;
+			//printf("tex_y + ratio = %f\n", (info->tex_y + ratio));
+			if (info->barrel.walldistance[whichray] > info->barrel.distance[i])
+			{
+				if ((info->sp.data[(int)info->tex_x + (int)info->tex_y * 64]) != 0)
+					color = info->sp.data[(int)info->tex_x + (int)info->tex_y * 64];
+				
+			//printf("tex_x = %d et tex_y = %d\n", (int)info->tex_x, (int)info->tex_y);
+			}
+			if ((info->sp.data[(int)info->tex_x + (int)info->tex_y * 64]) != 0 && info->barrel.walldistance[whichray] > info->barrel.distance[i])
+				mlx_put_in_img(info, whichray, y, color);
+			y++;
+			ratio = 64/info->barrel.height;
+		}
+		info->tex_y = 0;
+		y = start;
+		info->tex_x += ratio;
+		whichray++;
+	}
+	//info->barrel.lastray = whichray - 1;
+	printf("lastray = %d\n", whichray - 1);
 }
 
 void print_sprite(t_info *info, int i)
@@ -191,7 +294,6 @@ void print_sprite(t_info *info, int i)
 	double color;
 	int start;
 
-	//printf("hauteur[%d] = %f\n", i, info->barrel.distance[i]);
 	start = (info->screenheight - info->barrel.height)/2;
 	y = start;
 	//printf("y = %d\n", y);
@@ -323,7 +425,7 @@ void initialise(t_info *info, int i)
 	// ci dessous on calcule l angle aigu entre 2 droite (x axis et spriteray)
 //	printf("spriteray.m = %f\n", info->barrel.spriteray.m);
 	info->barrel.spriteangle = ft_rad2deg(atan(fabs(info->barrel.spriteray.m))); // car equation de la droite x axis est y = 0 et la formule tan(alpha) = abs ((m2-m1)/(1 +(m2*m1)))
-	printf("spriteangle1 = %f\n", info->barrel.spriteangle);
+	//printf("spriteangle1 = %f\n", info->barrel.spriteangle);
 	// le spriteangle doit etre proche du vrai angle 
 	//info->barrel.spriteangle -= (info->barrel.spriteangle - info->angle);
 	if (info->barrel.spriteray.m == 0)
@@ -361,14 +463,14 @@ void initialise(t_info *info, int i)
 	info->barrel.spriteplandir.y = sin(ft_deg2rad(info->angle + 90)) * info->blocksize/2;
 	//info->barrel.spriteplandir.y = round(sin(ft_deg2rad(info->barrel.spriteangle + 90)) * info->blocksize/2);
 //	printf("spriteangle = %f\n", info->barrel.spriteangle);
-	printf("spriteplandir.x = %f et spriteplandir.y = %f\n", info->barrel.spriteplandir.x, info->barrel.spriteplandir.y);
+//	printf("spriteplandir.x = %f et spriteplandir.y = %f\n", info->barrel.spriteplandir.x, info->barrel.spriteplandir.y);
 }
 
 void seekdrawstart(t_info *info, int i)
 {
 	info->barrel.startdrawx[i] = info->barrel.x[i] + info->barrel.spriteplandir.x;
 	info->barrel.startdrawy[i] = info->barrel.y[i] + info->barrel.spriteplandir.y;
-	printf("startdrawx[%d] = %f et startdrawy[%d] = %f\n", i, info->barrel.startdrawx[i], i, info->barrel.startdrawy[i]);
+//	printf("startdrawx[%d] = %f et startdrawy[%d] = %f\n", i, info->barrel.startdrawx[i], i, info->barrel.startdrawy[i]);
 }
 
 // void seekdrawend(t_info *info, int i)
@@ -452,7 +554,6 @@ double spriteheight(t_info *info, double distance)
 	double height;
 
 	corrected_distance = fishbowlsprite(info, distance); // il faut appliquer cette formule pour tout angle ou juste pour les angle droit??
-	printf("---------------------------------------------------------corrected_distance %f\n", corrected_distance);
 	height = projected_slice_hight(info, corrected_distance);
 	return (height);
 }
@@ -463,15 +564,8 @@ double fishbowlsprite(t_info *info, double distorted_distance)
 
 	// // // // printf("angle_offset = %f\n", angle_offset);
 	if (info->angle < info->barrel.spriteangle)
-	{
-		printf("----------------------------------------------------hey1\n");
 		corrected_distance = distorted_distance * cos(ft_deg2rad(info->barrel.spriteangle - info->angle));
-	}
 	else
-	{
-		printf("----------------------------------------------------hey2\n");
-		printf("----------------------------------------------------spriteangle = %f\n", info->barrel.spriteangle);
 		corrected_distance = distorted_distance * cos(ft_deg2rad(info->angle - info->barrel.spriteangle));
-	}
 	return (corrected_distance);
 }
