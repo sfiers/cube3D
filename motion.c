@@ -80,9 +80,9 @@ int allowed_motion(t_info *info, double *displacement)
 
 int inside_map(t_info *info, t_map coordinates)
 {
-	if (coordinates.x >= 0 && coordinates.x < mapHeight)
+	if (coordinates.x >= 0 && coordinates.x < info->mapheight)
 	{	
-		if ((coordinates.y >= 0 && coordinates.y < mapWidth))
+		if ((coordinates.y >= 0 && coordinates.y < info->mapwidth))
 			return (1);
 	}
 	return (0);
@@ -96,7 +96,7 @@ int inside_map(t_info *info, t_map coordinates)
 int avoid_wall(t_map coordinates, t_info *info)
 {
 	//if (info->worldMap[(mapWidth - 1) - coordinates.y][coordinates.x] != 1) // 1 for Wall maybe there are other checks afterwards that need to be done
-	if ((info->worldMap[(mapWidth - 1) - coordinates.y][coordinates.x] != 1) && (info->worldMap[(mapWidth - 1) - coordinates.y][coordinates.x] != 2))
+	if ((info->worldMap[(info->mapwidth - 1) - coordinates.y][coordinates.x] != 1) && (info->worldMap[(info->mapwidth - 1) - coordinates.y][coordinates.x] != 2))
 		return (1);
 	return(0);
 }

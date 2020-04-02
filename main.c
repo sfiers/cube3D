@@ -178,12 +178,18 @@ int main()
 
 int saveintab(t_info *info, int whichray)
 {
-	if (!(info->barrel.walldistance = malloc(sizeof(double) * (info->screenwidth))))
+	if ((!(info->barrel.walldistance = malloc(sizeof(double) * (info->screenwidth))))
+		|| (!(info->barrel.a = malloc(sizeof(double) * (info->screenwidth))))
+		|| (!(info->barrel.c = malloc(sizeof(double) * (info->screenwidth))))
+		|| (!(info->barrel.distance = malloc(sizeof(double) * (info->nbsprite)))))
 		return (-1);
-	if (!(info->barrel.a = malloc(sizeof(double) * (info->screenwidth))))
-		return (-1);
-	if (!(info->barrel.c = malloc(sizeof(double) * (info->screenwidth))))
-		return (-1);
+	// if (!(info->barrel.a = malloc(sizeof(double) * (info->screenwidth))))
+	// 	return (-1);
+	// if (!(info->barrel.c = malloc(sizeof(double) * (info->screenwidth))))
+	// 	return (-1);
+	// if (!(info->barrel.distance = malloc(sizeof(double) * (info->nbsprite))))
+	// 	return (-1);
+	
 	// info->barrel.a[whichray] = info->ray.m;
 	// info->barrel.c[whichray] = info->ray.n;
 	//printf("ray.m = %f et ray.n = %f\n", info->ray.m, info->ray.n);
@@ -302,7 +308,7 @@ int map_bounderies(t_info *info, int n)
 		// printf("info->redflag[n] = %d\n", info->redflag[n]);
 		return (1);
 	}
-	if ((int)info->test_axis[n].x >= (int)(mapHeight * info->blocksize) || (int)info->test_axis[n].y >= (int)(mapWidth * info->blocksize))
+	if ((int)info->test_axis[n].x >= (int)(info->mapheight * info->blocksize) || (int)info->test_axis[n].y >= (int)(info->mapwidth * info->blocksize))
 	{
 		info->redflag[n] = 1;
 		// printf("info->redflag[n] = %d\n", info->redflag[n]);
@@ -385,7 +391,7 @@ int hit_map(t_info *info, int n)
 	// // printf("map 3 2 = %d\n", info->worldMap[3][2]);
 	if (info->map[n].x < 0 || info->map[n].y < 0) // y sais etre moins 1 dans le test peut etre x aussi
 		return (1);
-	if (info->worldMap[(mapWidth - 1) - info->map[n].y][info->map[n].x] == 1) // because our map y-axis is reversed (to be checked if mapWidth and not mapHeight)
+	if (info->worldMap[(info->mapwidth - 1) - info->map[n].y][info->map[n].x] == 1) // because our map y-axis is reversed (to be checked if mapWidth and not mapHeight)
 	{
 		// // printf("testtest\n");	
 		return (1);

@@ -7,9 +7,6 @@
 // a.y = 1325.184814
 // angle = 180.000000
 
-#define mapWidth 24
-#define mapHeight 24
-
 // double worldMap[mapWidth][mapHeight]=
 // {
 //   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, // 0
@@ -148,16 +145,14 @@ typedef struct      s_droite
 
 typedef struct      s_sprites
 {
-	double distance[mapWidth*mapHeight];
-	double x[mapWidth*mapHeight];
-	double y[mapWidth*mapHeight];
+	double *distance;
+	double *x;
+	double *y;
 	t_p spriteplandir;
-	double startdrawx[mapWidth*mapHeight];
-	double startdrawy[mapWidth*mapHeight];
+	double startdrawx;
+	double startdrawy;
 	int startray;
 	double height;
-	double ab[mapWidth*mapHeight];
-	double disttworay[mapWidth*mapHeight];
 	t_ray firstray;
 	t_ray lastray;
 	t_ray spriteray;
@@ -415,7 +410,7 @@ void nesw(t_info *info);
 */
 
 void handlesprites(t_info *info);
-void coordinatesofbarrel(t_info *info);
+int coordinatesofbarrel(t_info *info);
 void distance_2_sprite(t_info *info);
 void ft_sort_sprites(t_info *info);
 void initialise(t_info *info, int i);

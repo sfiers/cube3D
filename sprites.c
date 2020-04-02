@@ -64,13 +64,13 @@ void handlesprites(t_info *info)
 			seekdrawstart(info, i);
 			info->barrel.middleray = findray(info, i, info->barrel.x[i], info->barrel.y[i]);
 			printf ("info->barrel.middleray = %d\n",  info->barrel.middleray);
-			info->barrel.startray = findray(info, i, info->barrel.startdrawx[i], info->barrel.startdrawy[i]);
+			info->barrel.startray = findray(info, i, info->barrel.startdrawx, info->barrel.startdrawy);
 			printf ("info->barrel.startray = %d\n",  info->barrel.startray);
 			if (info->barrel.startray < 0)
 			{
-				info->barrel.startdrawx[i] = info->barrel.x[i] - info->barrel.spriteplandir.x;
-	 			info->barrel.startdrawy[i] = info->barrel.y[i] - info->barrel.spriteplandir.y;
-				info->barrel.endray = findray(info, i, info->barrel.startdrawx[i], info->barrel.startdrawy[i]);
+				info->barrel.startdrawx = info->barrel.x[i] - info->barrel.spriteplandir.x;
+	 			info->barrel.startdrawy = info->barrel.y[i] - info->barrel.spriteplandir.y;
+				info->barrel.endray = findray(info, i, info->barrel.startdrawx, info->barrel.startdrawy);
 				printf("endray = %d\n", info->barrel.endray);
 				info->barrel.endray == info->screenwidth - 1 ? print_sprite_middle(info, i) : print_sprite_right(info, i, info->barrel.endray, 63);
 			}
@@ -178,8 +178,8 @@ void initialise(t_info *info, int i)
 
 void seekdrawstart(t_info *info, int i)
 {
-	info->barrel.startdrawx[i] = info->barrel.x[i] + info->barrel.spriteplandir.x;
-	info->barrel.startdrawy[i] = info->barrel.y[i] + info->barrel.spriteplandir.y;
+	info->barrel.startdrawx = info->barrel.x[i] + info->barrel.spriteplandir.x;
+	info->barrel.startdrawy = info->barrel.y[i] + info->barrel.spriteplandir.y;
 }
 
 void distance_2_sprite(t_info *info)
@@ -224,7 +224,7 @@ void ft_sort_sprites(t_info *info)
 	}
 }
 
-void coordinatesofbarrel(t_info *info)
+int coordinatesofbarrel(t_info *info)
 {
 	int i;
 	int j;
@@ -233,21 +233,25 @@ void coordinatesofbarrel(t_info *info)
 	i = 0;  // lignes
 	j = 0;  // colonnes
 	n = 0;
-	while (i < mapHeight)
+	if ((!(info->barrel.x = malloc(sizeof(double) * (info->nbsprite)))) 
+		|| (!(info->barrel.y = malloc(sizeof(double) * (info->nbsprite)))))
+		return (-1);
+	while (i < info->mapheight)
 	{
 		j = 0;
-		while (j < mapWidth)
+		while (j < info->mapwidth && n < info->nbsprite)
 		{
 			if (info->worldMap[i][j] == 2)
 			{
 				info->barrel.x[n] = j * 64 + 32;
-				info->barrel.y[n] = (mapHeight - 1 - i) * 64 + 32; 
+				info->barrel.y[n] = (info->mapheight - 1 - i) * 64 + 32;
 				n++;
 			}
 			j++;
 		}
 		i++;
 	}
+	return (1);
 }
 
 double spriteheight(t_info *info, double distance)
