@@ -6,7 +6,7 @@
 /*   By: lduhamel <lduhamel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/13 13:18:04 by lduhamel          #+#    #+#             */
-/*   Updated: 2020/03/31 18:36:06 by lduhamel         ###   ########.fr       */
+/*   Updated: 2020/04/02 20:46:19 by lduhamel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,47 +163,6 @@ int if_digit(t_element *elem)
 	return (1);
 }
 
-// char	*join(char *str1, char *str2, char *str3)
-// {
-// 	char *str;
-// 	int i;
-
-// 	str = NULL;
-// 	i = 2;
-// 	str = (char*)malloc(sizeof(char) * 8 + 1);
-// 	str[0] = 0 - '0';
-// 	str[1] = 120 - '0';
-// 	str[i++] = str1[0];
-// 	str[i++] = str1[1];
-// 	str[i++] = str2[0];
-// 	str[i++] = str2[1];
-// 	str[i++] = str3[0];
-// 	str[i++] = str3[1];
-// 	str[i] = '\0';
-// 	return (str);
-// }
-
-// int create_trgb(t_element *elem, t_info *info, long int trgb)
-// {
-// 	// elem->t_hex = "0x";
-// 	// elem->r_hex = i_to_x((unsigned)elem->r, elem->r_hex, "0123456789ABCDEF");
-// 	// elem->g_hex = i_to_x((unsigned)elem->g, elem->g_hex, "0123456789ABCDEF");
-// 	// elem->b_hex = i_to_x((unsigned)elem->b, elem->b_hex, "0123456789ABCDEF");
-// 	// printf("t_hex = %s\n", elem->t_hex);
-// 	// printf("r_hex = %s\n", elem->r_hex);
-// 	// printf("g_hex = %s\n", elem->g_hex);
-// 	// printf("b_hex = %s\n", elem->b_hex);
-// 	// elem->trgb = join(elem->r_hex, elem->g_hex, elem->b_hex);
-// 	trgb = 0;
-// 	elem->t = 0;
-// 	trgb = (elem->t << 0 | elem->r << 8 | elem->g << 16 | elem->b << 24);
-// 	// printf("trgb = %s\n", elem->trgb);
-// 	// atoi_vo(elem->trgb);
-// 	// trgb = 
-// 	printf("trgb = %ld\n", trgb);
-// 	return (1);
-// }
-
 void init_elem(t_element *elem)
 {
 	elem->r = 0;
@@ -221,7 +180,7 @@ int color(t_element *elem, int trgb)
 	elem->i++;
 	while (elem->line[elem->i] != '\0')
 	{
-		// printf("i = %d\n", elem->i);
+	//	printf("i = %d\n", elem->i);
 		if (elem->line[elem->i] == '-' && is_digit(elem->line[elem->i+1]))
 			return (-5);
 		else if (is_digit(elem->line[elem->i]))
@@ -256,7 +215,7 @@ int texture(t_element *elem, t_info *info, char *path)
 int read_elem(t_element *elem, t_info *info)
 {
 	elem->ret = 1;
-	while (elem->ret == 1)
+	while (elem->ret == 1) //degager la boucle qui sert a rien
 	{
 		elem->i = 0;
 		elem->ret = get_next_line(elem->fd, &elem->line);
@@ -275,12 +234,18 @@ int read_elem(t_element *elem, t_info *info)
 		if (elem->line[elem->i] == 'F')
 		{
 			if ((info->trgb_floor = color(elem, info->trgb_floor)) < 0)
-				return (-1);
+			{
+				elem->ret = info->trgb_floor;
+				return (elem->ret);
+			}
 		}
 		if (elem->line[elem->i] == 'C')
 		{
 			if ((info->trgb_ceiling = color(elem, info->trgb_ceiling)) < 0)
-				return (-1);
+			{
+				elem->ret = info->trgb_ceiling;
+				return (elem->ret);
+			}
 		}
 		if (elem->line[elem->i] == 'N' && elem->line[elem->i+1] == 'O')
 			texture(elem, info, elem->texture_no);
@@ -291,8 +256,8 @@ int read_elem(t_element *elem, t_info *info)
 		if (elem->line[elem->i] == 'E' && elem->line[elem->i+1] == 'A')
 			texture(elem, info, elem->texture_ea);
 
-		printf("ceiling = %p\n", info->trgb_ceiling);
-		printf("floor = %p\n", info->trgb_floor);
+		// printf("ceiling = %p\n", info->trgb_ceiling);
+		// printf("floor = %p\n", info->trgb_floor);
 	}
 	return (0);
 }
@@ -302,7 +267,7 @@ int	parsing2(t_element *elem, t_info *info)
 	elem->counter = 0;
 	if ((elem->fd = open("map2.txt", O_RDONLY)) < 0)
 		return (-1);
-	if (read_elem(elem, info) == -1)
+	if (read_elem(elem, info) < 0)
 	{
 		put_error1(elem);
 	}

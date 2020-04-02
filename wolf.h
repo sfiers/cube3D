@@ -326,6 +326,7 @@ void sprite(t_info *info, int n);
 */
 
 void fill_info(t_info *info, t_maptab *tab);
+void player_position(t_info *info, int i, int j);
 int	parsing(t_maptab *tab, t_info *info);
 int			first_string(t_maptab *tab, t_info *info);
 void		put_error(t_error *error);

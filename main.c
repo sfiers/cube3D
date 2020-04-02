@@ -5,16 +5,16 @@ void fill_info(t_info *info, t_maptab *tab)
 	info->tex_x = 0; //************new
 //info->count_x = 0; //**********new
 	info->blocksize = 64;
-	info->screenwidth = 1600;
-	info->screenheight = 900;
+	// info->screenwidth = 1600; // a degager
+	// info->screenheight = 900; // a degager
 	info->mapwidth = tab->len_max;
 	info->mapheight = tab->counter;
+	coordinatesofbarrel(info);
 //printf("mapwidth = %d et mapheight = %d\n", info->mapwidth, info->mapheight);
 	info->pov = 66;
-	info->a.x = 160;
-	info->a.y = 96;
-	info->angle = 90; // link to input NESW
-	info->a.z = 32; // retirer ???
+//	info->a.x = 160; // a degager
+//	info->a.y = 96; // a degager
+	//info->angle = 90; // a degager
 	info->bad = info->pov/2;
 	info->bd = info->screenwidth / 2;
 	info->ad = toa(info->bad, info->bd);
@@ -29,7 +29,6 @@ void fill_info(t_info *info, t_maptab *tab)
 	info->next_axis[0] = (int)info->a.x + (int)info->blocksize - ((int)info->a.x % (int)info->blocksize);
 	info->next_axis[1] = (int)info->a.y + (int)info->blocksize - ((int)info->a.y % (int)info->blocksize);
 	info->side = 0; //*************new
-	coordinatesofbarrel(info);
 }
 
 void update_info(t_info *info)
@@ -108,23 +107,19 @@ void	ft_display(t_info *info, int whichray, double wall_hight) // probablenent s
 	while (y < info->screenheight)
 	{
 		while (y < info->screenheight && y < wall_down) //plafond
-			mlx_put_in_img(info, whichray, y++, 0x87ceff);
-			//mlx_put_in_img(info, whichray, y++,info->trgb_ceiling);
+			//mlx_put_in_img(info, whichray, y++, 0x87ceff);
+			mlx_put_in_img(info, whichray, y++,info->trgb_ceiling);
 		while (y < info->screenheight && y < (wall_down + wall_hight)) //mur
 		{
 			info->tex_y = info->tex_y + ratio;
 			if ((int)info->tex_y >= 64)
 				break;
-			// printf("tex_y + ratio = %f\n", (info->tex_y + ratio)); 
 			color = texture[(int)info->tex_x + (int)info->tex_y * 64];
-			//printf("tex_x = %d et tex_y = %d\n", (int)info->tex_x, (int)info->tex_y);
-			//info->count_y++;
 			mlx_put_in_img(info, whichray, y++, color);
-			//mlx_put_in_img(info, whichray, y++, 0xcd853f);
 		}
 		if (y < info->screenheight)
-			mlx_put_in_img(info, whichray, y++, 0x54ff9f);  //sol
-			//mlx_put_in_img(info, whichray, y++, info->trgb_floor);
+			//mlx_put_in_img(info, whichray, y++, 0x54ff9f);  //sol
+			mlx_put_in_img(info, whichray, y++, info->trgb_floor);
 	}
 }
 
@@ -152,11 +147,12 @@ int main()
 	t_maptab tab;
 	t_error error;
 	t_sprites barrel;
-	//t_element elem;
+	t_element elem;
 
 	parsing(&tab, &info);
 	info.worldMap = tab.tab;
-	//parsing2(&elem, &info);
+	if (parsing2(&elem, &info) == -1)
+		return (-1);
 	fill_info(&info, &tab);
 	//fill_static(&info);
 	info.s.mlx = mlx_init();

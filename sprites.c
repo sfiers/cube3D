@@ -247,11 +247,31 @@ int coordinatesofbarrel(t_info *info)
 				info->barrel.y[n] = (info->mapheight - 1 - i) * 64 + 32;
 				n++;
 			}
+			player_position(info, i, j);
+			printf("info->angle = %f\n", info->angle);
 			j++;
 		}
 		i++;
 	}
 	return (1);
+}
+
+void player_position(t_info *info, int i, int j)
+{
+	if (info->worldMap[i][j] == 3) //N
+		info->angle = 90;
+	if (info->worldMap[i][j] == 4) //W
+		info->angle = 180;
+	if (info->worldMap[i][j] == 5) //S
+		info->angle = 270;
+	if (info->worldMap[i][j] == 6) //E
+		info->angle = 0;
+	if (info->worldMap[i][j] == 3 || info->worldMap[i][j] == 4
+		|| info->worldMap[i][j] == 5 || info->worldMap[i][j] == 6)
+	{
+		info->a.x = j * 64 + 32;
+		info->a.y = (info->mapheight - 1 - i) * 64 + 32;
+	}
 }
 
 double spriteheight(t_info *info, double distance)
