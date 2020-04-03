@@ -183,6 +183,11 @@ typedef struct      s_info
 	int		screenheight;
 	int		trgb_ceiling;
 	int		trgb_floor;
+	char *we_texture;
+	char *sp_texture;
+	char *no_texture;
+	char *ea_texture;
+	char *so_texture;
 	double tex_y; //*********new
 	double tex_x; //*********new
 	double pov;
@@ -259,11 +264,11 @@ typedef struct      s_element
 {
 	char *line;
 	int counter;
-	char *texture_we;
-	char *texture_sprite;
-	char *texture_no;
-	char *texture_ea;
-	char *texture_so;
+	// char *texture_we;
+	// char *texture_sprite;
+	// char *texture_no;
+	// char *texture_ea;
+	// char *texture_so;
 	int fd;
 	int ret;
 	int i;
@@ -285,6 +290,7 @@ typedef struct      s_element
 	int trgb_floor;
 	int trgb_ceiling;
 	int comma;
+	int texture_flag;
 }					t_element;
 
 typedef struct	mlx_ptr_s
@@ -351,8 +357,11 @@ int if_digit(t_element *elem);
 int create_trgb(t_element *elem, t_info *info, long int trgb);
 int read_elem(t_element *elem, t_info *info);
 int	parsing2(t_element *elem, t_info *info);
-int texture(t_element *elem, t_info *info, char *path);
+char *texture(t_element *elem, t_info *info);
+int which_texture(t_element *elem, t_info *info);
+int texture_copy(t_element *elem, t_info *info, char *path, int n);
 int color(t_element *elem, int trgb);
+int which_color(t_element *elem, t_info *info);
 int resolution(t_element *elem, t_info *info);
 int error_ret1(t_element *elem);
 char	*ft_strdup1(char *s1);
@@ -451,6 +460,7 @@ int rendering(t_info *info);
 void	mlx_put_in_img(t_info *info, int x, int y, int color);
 int saveintab(t_info *info, int whichray);
 void update_info(t_info *info);
+void free_tabs(t_info *info);
 
 
 #endif

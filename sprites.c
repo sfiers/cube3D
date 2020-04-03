@@ -63,15 +63,15 @@ void handlesprites(t_info *info)
 		{	
 			seekdrawstart(info, i);
 			info->barrel.middleray = findray(info, i, info->barrel.x[i], info->barrel.y[i]);
-			printf ("info->barrel.middleray = %d\n",  info->barrel.middleray);
+		//	printf ("info->barrel.middleray = %d\n",  info->barrel.middleray);
 			info->barrel.startray = findray(info, i, info->barrel.startdrawx, info->barrel.startdrawy);
-			printf ("info->barrel.startray = %d\n",  info->barrel.startray);
+		//	printf ("info->barrel.startray = %d\n",  info->barrel.startray);
 			if (info->barrel.startray < 0)
 			{
 				info->barrel.startdrawx = info->barrel.x[i] - info->barrel.spriteplandir.x;
 	 			info->barrel.startdrawy = info->barrel.y[i] - info->barrel.spriteplandir.y;
 				info->barrel.endray = findray(info, i, info->barrel.startdrawx, info->barrel.startdrawy);
-				printf("endray = %d\n", info->barrel.endray);
+			//	printf("endray = %d\n", info->barrel.endray);
 				info->barrel.endray == info->screenwidth - 1 ? print_sprite_middle(info, i) : print_sprite_right(info, i, info->barrel.endray, 63);
 			}
 			else
@@ -93,6 +93,7 @@ void print_sprite_right(t_info *info, int i, int whichray, double tex_x)
 	double ratio;
 
 	y = info->barrel.ystart;
+	printf("ystart = %d\n", info->barrel.ystart);
 	ratio = 0;
 	info->tex_y = 0;
 	while (tex_x >= 0 && whichray >= 0)
@@ -107,7 +108,7 @@ void print_sprite_right(t_info *info, int i, int whichray, double tex_x)
 				if ((info->sp.data[(int)tex_x + (int)info->tex_y * 64]) != 0)
 					info->barrel.color = info->sp.data[(int)tex_x + (int)info->tex_y * 64];
 			}
-			if ((info->sp.data[(int)tex_x + (int)info->tex_y * 64]) != 0 && info->barrel.walldistance[whichray] > info->barrel.distance[i])
+			if ((y >= 0 && info->sp.data[(int)tex_x + (int)info->tex_y * 64]) != 0 && info->barrel.walldistance[whichray] > info->barrel.distance[i])
 				mlx_put_in_img(info, whichray, y, info->barrel.color);
 			y++;
 			ratio = 64/info->barrel.height;
@@ -117,7 +118,7 @@ void print_sprite_right(t_info *info, int i, int whichray, double tex_x)
 		tex_x -= ratio;
 		whichray--;
 	}
-	printf("firstray = %d\n", whichray + 1);
+//printf("firstray = %d\n", whichray + 1);
 }
 
 void print_sprite_left(t_info *info, int i, int whichray, double tex_x)
@@ -140,7 +141,7 @@ void print_sprite_left(t_info *info, int i, int whichray, double tex_x)
 				if ((info->sp.data[(int)tex_x + (int)info->tex_y * 64]) != 0)
 					info->barrel.color = info->sp.data[(int)tex_x + (int)info->tex_y * 64];
 			}
-			if ((info->sp.data[(int)tex_x + (int)info->tex_y * 64]) != 0 && info->barrel.walldistance[whichray] > info->barrel.distance[i])
+			if ((y >= 0 && info->sp.data[(int)tex_x + (int)info->tex_y * 64]) != 0 && info->barrel.walldistance[whichray] > info->barrel.distance[i])
 				mlx_put_in_img(info, whichray, y, info->barrel.color);
 			y++;
 			ratio = 64/info->barrel.height;
@@ -150,7 +151,7 @@ void print_sprite_left(t_info *info, int i, int whichray, double tex_x)
 		tex_x += ratio;
 		whichray++;
 	}
-	printf("lastray = %d\n", whichray - 1);
+//	printf("lastray = %d\n", whichray - 1);
 }
 
 void initialise(t_info *info, int i)
@@ -248,7 +249,7 @@ int coordinatesofbarrel(t_info *info)
 				n++;
 			}
 			player_position(info, i, j);
-			printf("info->angle = %f\n", info->angle);
+		//	printf("info->angle = %f\n", info->angle);
 			j++;
 		}
 		i++;

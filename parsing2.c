@@ -6,7 +6,7 @@
 /*   By: lduhamel <lduhamel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/13 13:18:04 by lduhamel          #+#    #+#             */
-/*   Updated: 2020/04/02 20:46:19 by lduhamel         ###   ########.fr       */
+/*   Updated: 2020/04/03 17:31:10 by lduhamel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,8 @@ int error_ret1(t_element *elem)
 			elem->msg = ft_strdup1("Color information should be 3 numbers, not less, not more");
 		if (elem->ret == -7)
 			elem->msg = ft_strdup1("Color information must only be 3 numbers");
+		if (elem->ret == -8)
+			elem->msg = ft_strdup1("Texture path should only be a path (spaces allowed before and after the path)");
 		return (1);
 	}
 	return (0);
@@ -180,7 +182,6 @@ int color(t_element *elem, int trgb)
 	elem->i++;
 	while (elem->line[elem->i] != '\0')
 	{
-	//	printf("i = %d\n", elem->i);
 		if (elem->line[elem->i] == '-' && is_digit(elem->line[elem->i+1]))
 			return (-5);
 		else if (is_digit(elem->line[elem->i]))
@@ -189,75 +190,137 @@ int color(t_element *elem, int trgb)
 				return (ret);
 		}
 		else if (elem->line[elem->i] != ' ')
-		{
-			if (elem->flag == 3 && elem->line[elem->i] == ',')
-				return (-4);
-			else
-				return (-7);
-		}
+			return ((elem->flag == 3 && elem->line[elem->i] == ',') ? -4 : -7);
 		elem->i++;
 	}
 	if (elem->flag != 3)
 		return (-6);
-	// printf("r = %d\n", elem->r);
-	// printf("g = %d\n", elem->g);
-	// printf("b = %d\n", elem->b);
 	trgb = 65536 * elem->r + 256 * elem->g + elem->b;
 	return (trgb);
 }
 
-int texture(t_element *elem, t_info *info, char *path)
+int texture_copy(t_element *elem, t_info *info, char *path, int n)
 {
-	printf("Texture\n");
+	int j;
+	j = 0;
+	elem->i -= n;
+	while (elem->line[elem->i] != ' ' && elem->line[elem->i] != '\0')
+	{
+		path[j] = elem->line[elem->i];
+		j++;
+		elem->i++;
+	}
+	path[j] = '\0';
+	while (elem->line[elem->i] != '\0')
+	{
+		if (elem->line[elem->i] == ' ')
+			elem->i++;
+		else
+		{
+			elem->ret = -8;
+			free(path);
+			return (-1);
+		}
+	}
+	return (1);
+}
+
+char *texture(t_element *elem, t_info *info)
+{
+	int n;
+	char *path;
+
+	n = 0;
+	path = NULL;
+	elem->i++;
+	elem->i += (elem->texture_flag == 1 ? 1 : 0);
+	while (elem->line[elem->i] == ' ' && elem->line[elem->i+1] != '\0')
+		elem->i++;
+	if (elem->line[elem->i] == '.' && elem->line[elem->i+1] == '/')
+	{
+		while (elem->line[elem->i] != ' ' && elem->line[elem->i] != '\0')
+		{
+			n++;
+			elem->i++;
+		}
+		if (!(path = malloc(sizeof(char) * n + 1)))
+			return (NULL);
+		texture_copy(elem, info, path, n);
+		if (elem->ret < 0)
+			return (NULL);
+	}
+	else
+	{
+		elem->ret = -8;
+		free(path);
+		return (NULL);
+	}
+	return (path);
+}
+
+int which_texture(t_element *elem, t_info *info)
+{
+	elem->texture_flag = 1;  //when = 1 => increment elem->i;
+	if (elem->line[elem->i] == 'S' && elem->line[elem->i+1] != 'O')
+	{
+		info->sp_texture = texture(elem, info);
+		elem->texture_flag = 0;
+	}
+	else if (elem->line[elem->i] == 'N' && elem->line[elem->i+1] == 'O')
+		info->no_texture = texture(elem, info);
+	else if (elem->line[elem->i] == 'S' && elem->line[elem->i+1] == 'O')
+		info->so_texture = texture(elem, info);
+	else if (elem->line[elem->i] == 'W' && elem->line[elem->i+1] == 'E')
+		info->we_texture = texture(elem, info);
+	else if (elem->line[elem->i] == 'E' && elem->line[elem->i+1] == 'A')
+		info->ea_texture = texture(elem, info);
+	return (1);
+}
+
+int which_color(t_element *elem, t_info *info)
+{
+	if (elem->line[elem->i] == 'F')
+	{
+		if ((info->trgb_floor = color(elem, info->trgb_floor)) < 0)
+		{
+			elem->ret = info->trgb_floor;
+			return (elem->ret);
+		}
+	}
+	else if (elem->line[elem->i] == 'C')
+	{
+		if ((info->trgb_ceiling = color(elem, info->trgb_ceiling)) < 0)
+		{
+			elem->ret = info->trgb_ceiling;
+			return (elem->ret);
+		}
+	}
 	return (1);
 }
 
 int read_elem(t_element *elem, t_info *info)
 {
 	elem->ret = 1;
-	while (elem->ret == 1) //degager la boucle qui sert a rien
+	while (elem->ret == 1) 
 	{
 		elem->i = 0;
 		elem->ret = get_next_line(elem->fd, &elem->line);
-		//printf("line = %s\n", elem->line);
+		printf("line = %s\n", elem->line);
 		if (elem->line[0] == '\0')
 			return (0);
 		while (elem->line[elem->i] == ' ')
 			elem->i++;
 		if (elem->line[elem->i] == 'R')
-		{
-			if ((elem->ret = resolution(elem, info)) < 0)
-				return (-1);
-		}
-		if (elem->line[elem->i] == 'S')
-			texture(elem, info, elem->texture_sprite);
-		if (elem->line[elem->i] == 'F')
-		{
-			if ((info->trgb_floor = color(elem, info->trgb_floor)) < 0)
-			{
-				elem->ret = info->trgb_floor;
-				return (elem->ret);
-			}
-		}
-		if (elem->line[elem->i] == 'C')
-		{
-			if ((info->trgb_ceiling = color(elem, info->trgb_ceiling)) < 0)
-			{
-				elem->ret = info->trgb_ceiling;
-				return (elem->ret);
-			}
-		}
-		if (elem->line[elem->i] == 'N' && elem->line[elem->i+1] == 'O')
-			texture(elem, info, elem->texture_no);
-		if (elem->line[elem->i] == 'S' && elem->line[elem->i+1] == 'O')
-			texture(elem, info, elem->texture_so);
-		if (elem->line[elem->i] == 'W' && elem->line[elem->i+1] == 'E')
-			texture(elem, info, elem->texture_we);
-		if (elem->line[elem->i] == 'E' && elem->line[elem->i+1] == 'A')
-			texture(elem, info, elem->texture_ea);
-
-		// printf("ceiling = %p\n", info->trgb_ceiling);
-		// printf("floor = %p\n", info->trgb_floor);
+			elem->ret = resolution(elem, info);
+		else if (elem->line[elem->i] == 'F' || elem->line[elem->i] == 'C')
+			which_color(elem, info);
+		else if (elem->line[elem->i] == 'S' || (elem->line[elem->i] == 'N' && elem->line[elem->i+1] == 'O')
+			|| (elem->line[elem->i] == 'S' && elem->line[elem->i+1] == 'O')
+			|| (elem->line[elem->i] == 'W' && elem->line[elem->i+1] == 'E')
+			|| (elem->line[elem->i] == 'E' && elem->line[elem->i+1] == 'A'))
+			which_texture(elem, info);
+		if (elem->ret < 0)
+			return (-1);
 	}
 	return (0);
 }
@@ -270,6 +333,7 @@ int	parsing2(t_element *elem, t_info *info)
 	if (read_elem(elem, info) < 0)
 	{
 		put_error1(elem);
+		return (-1);
 	}
 	close(elem->fd);
 	return(0);

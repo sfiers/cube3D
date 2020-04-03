@@ -129,15 +129,15 @@ void put_texture(t_info *info)
 
 	size = 64;
 	//info->no.ptr = mlx_xpm_file_to_image(info->s.mlx, "./stone.xpm", &size, &size);
-	info->no.ptr = mlx_xpm_file_to_image(info->s.mlx, "./mossy.xpm", &size, &size);
+	info->no.ptr = mlx_xpm_file_to_image(info->s.mlx, info->no_texture, &size, &size);
 	info->no.data = (int *)mlx_get_data_addr(info->no.ptr, &info->no.bpp, &info->no.size, &info->no.a);
-	info->so.ptr = mlx_xpm_file_to_image(info->s.mlx, "./wood.xpm", &size, &size);
+	info->so.ptr = mlx_xpm_file_to_image(info->s.mlx, info->so_texture, &size, &size);
 	info->so.data = (int *)mlx_get_data_addr(info->so.ptr, &info->so.bpp, &info->so.size, &info->so.a);
-	info->we.ptr = mlx_xpm_file_to_image(info->s.mlx, "./stone.xpm", &size, &size);
+	info->we.ptr = mlx_xpm_file_to_image(info->s.mlx, info->we_texture, &size, &size);
 	info->we.data = (int *)mlx_get_data_addr(info->we.ptr, &info->we.bpp, &info->we.size, &info->we.a);
-	info->ea.ptr = mlx_xpm_file_to_image(info->s.mlx, "./test.xpm", &size, &size);
+	info->ea.ptr = mlx_xpm_file_to_image(info->s.mlx, info->ea_texture, &size, &size);
 	info->ea.data = (int *)mlx_get_data_addr(info->ea.ptr, &info->ea.bpp, &info->ea.size, &info->ea.a);
-	info->sp.ptr = mlx_xpm_file_to_image(info->s.mlx, "./barrel.xpm", &size, &size);
+	info->sp.ptr = mlx_xpm_file_to_image(info->s.mlx, info->sp_texture, &size, &size);
 	info->sp.data = (int *)mlx_get_data_addr(info->sp.ptr, &info->sp.bpp, &info->sp.size, &info->sp.a);
 }
 
@@ -152,7 +152,10 @@ int main()
 	parsing(&tab, &info);
 	info.worldMap = tab.tab;
 	if (parsing2(&elem, &info) == -1)
+	{
+		printf("stop\n");
 		return (-1);
+	}
 	fill_info(&info, &tab);
 	//fill_static(&info);
 	info.s.mlx = mlx_init();
@@ -162,6 +165,7 @@ int main()
 	info.s.img = mlx_new_image(info.s.mlx, info.screenwidth, info.screenheight);
 	info.s.data = (int *)mlx_get_data_addr(info.s.img, &info.s.bpp, &info.s.size, &info.s.a);
 	rendering(&info);
+	free_tabs(&info);
 	// mlx_put_image_to_window(s.mlx, s.win, s.img, info.screenWidth, info.screenHeight);
 	mlx_key_hook(info.s.win, ft_key_press, &info);
 	// mlx_key_hook(s.win, ft_angle, &info);
@@ -402,4 +406,12 @@ void nesw(t_info *info)
 	if (info->side == 1) 
 		info->nesw = (info->a.y < info->p_of_plan.y) ? 0 : 2;
 	return;
+}
+
+void free_tabs(t_info *info)
+{
+	free(info->barrel.walldistance);
+	free(info->barrel.a);
+	free(info->barrel.c);
+	free(info->barrel.distance);
 }
