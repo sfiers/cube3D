@@ -29,10 +29,6 @@ void fill_info(t_info *info, t_maptab *tab)
 	info->next_axis[0] = (int)info->a.x + (int)info->blocksize - ((int)info->a.x % (int)info->blocksize);
 	info->next_axis[1] = (int)info->a.y + (int)info->blocksize - ((int)info->a.y % (int)info->blocksize);
 	info->side = 0; //*************new
-	info->move.up = 1;
-	info->move.down = 1;
-	info->move.left = 1;
-	info->move.right = 1;
 }
 
 void update_info(t_info *info)
@@ -150,7 +146,7 @@ int main()
 	t_info info;
 	t_maptab tab;
 	t_error error;
-	t_sprites barrel;
+//	t_sprites barrel;
 	t_element elem;
 
 	if (parsing(&tab, &info) == -1)
@@ -172,11 +168,7 @@ int main()
 	info.s.data = (int *)mlx_get_data_addr(info.s.img, &info.s.bpp, &info.s.size, &info.s.a);
 	rendering(&info);
 	free_tabs(&info);
-	
-	// mlx_hook(info.s.win, KEYPRESS, KEYPRESSMASK, ft_key_hit, &info);
-	// mlx_hook(info.s.win, KEYRELEASE, KEYRELEASEMASK, ft_key_release, &info);
-	// 	printf("info->move.up = %d \n", info.move.up);
-	// mlx_loop_hook(info.s.mlx, ft_key_press, &info);
+	// mlx_put_image_to_window(s.mlx, s.win, s.img, info.screenWidth, info.screenHeight);
 	mlx_key_hook(info.s.win, ft_key_press, &info);
 	// mlx_key_hook(s.win, ft_angle, &info);
 //	mlx_loop_hook(s.mlx);
@@ -187,7 +179,7 @@ int main()
 //   if (tab.map_str1 != NULL)
 //   	free(tab.map_str1);
   free_malloc(&info);
- // system("leaks checker");
+  //system("leaks checker");
 }
 
 void free_malloc(t_info *info)

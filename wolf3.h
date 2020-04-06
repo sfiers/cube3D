@@ -1,5 +1,13 @@
 #ifndef WOLF_H 
 # define WOLF_H
+# define F_F	    (1 << 0)
+# define F_C	    (1 << 1)
+# define F_R		(1 << 2)
+# define F_SP	    (1 << 3)
+# define F_NO	    (1 << 4)
+# define F_SO       (1 << 5)
+# define F_WE		(1 << 6)
+# define F_EA       (1 << 7)
 // a.x = 750.951965
 // a.y = 265.356750
 // angle = 60.000000
@@ -50,16 +58,6 @@
 /*
 ** ------------------------- Structure Definitions -----------------------------
 */
-
-typedef struct				s_move
-{
-	int						up;
-	int						down;
-	int						right;
-	int						left;
-	int						camr;
-	int						caml;
-}							t_move;
 
 typedef struct      s_def
 {
@@ -234,7 +232,6 @@ typedef struct      s_info
 	// double temp_y;
 	int nbsprite;
 	t_sprites barrel;
-	t_move move;
 
 //	int wall[2];
 	// t_rgb ceiling;
@@ -273,7 +270,7 @@ typedef struct      s_maptab
 
 typedef struct      s_element
 {
-	char *line;	
+	char *line;
 	unsigned char bitflag;
 	int counter;
 	// char *texture_we;
@@ -321,27 +318,6 @@ typedef struct	mlx_ptr_s
 #define BACKWARD -1
 #define LEFT 1
 #define RIGHT -1 
-#define KEY_UP 125 //65362
-#define KEY_DOWN 126 //65364
-#define KEY_RIGHT 124 //65361
-#define KEY_LEFT 123 //65363
-#define ROTATE_LEFT 123
-#define ROTATE_RIGHT 124
-#define KEYPRESS 2
-#define KEYRELEASE 3
-#define KEYPRESSMASK 1L<<0
-#define KEYRELEASEMASK 1L<<1
-# define F_F	    (1 << 0)
-# define F_C	    (1 << 1)
-# define F_R		(1 << 2)
-# define F_SP	    (1 << 3)
-# define F_NO	    (1 << 4)
-# define F_SO       (1 << 5)
-# define F_WE		(1 << 6)
-# define F_EA       (1 << 7)
-
-int	ft_key_hit(int keycode, t_info *info);
-int	ft_key_release(int keycode, t_info *info);
 
 /*
 ** -----------------------------------------------------------------------------
