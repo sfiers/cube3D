@@ -29,6 +29,10 @@ void fill_info(t_info *info, t_maptab *tab)
 	info->next_axis[0] = (int)info->a.x + (int)info->blocksize - ((int)info->a.x % (int)info->blocksize);
 	info->next_axis[1] = (int)info->a.y + (int)info->blocksize - ((int)info->a.y % (int)info->blocksize);
 	info->side = 0; //*************new
+	info->move.up = 1;
+	info->move.down = 1;
+	info->move.left = 1;
+	info->move.right = 1;
 }
 
 void update_info(t_info *info)
@@ -149,8 +153,10 @@ int main()
 	t_sprites barrel;
 	t_element elem;
 
-	parsing(&tab, &info);
-	info.worldMap = tab.tab;
+	if (parsing(&tab, &info) == -1)
+		return (-1);
+	else
+		info.worldMap = tab.tab;
 	if (parsing2(&elem, &info) == -1)
 	{
 		printf("stop\n");
@@ -179,7 +185,27 @@ int main()
 //	mlx_hook(s.win, 3, 1L<<1, ft_angle, &s);
 	// mlx_hook(info.s.win, 2, 1L<<0, ft_close, &info.s); //fermer la fenetre, 0xffff);  //imprimer pixel
   mlx_loop(info.s.mlx);
-  free(tab.map_str1);
+//   if (tab.map_str1 != NULL)
+//   	free(tab.map_str1);
+  free_malloc(&info);
+ // system("leaks checker");
+}
+
+void free_malloc(t_info *info)
+{
+	int i;
+
+	i = 0;
+	free(info->no_texture);
+	free(info->so_texture);
+	free(info->ea_texture);
+	free(info->we_texture);
+	free(info->sp_texture);
+	while (i < info->mapheight)
+	{
+		free(info->worldMap[i]);
+		i++;
+	}
 }
 
 int saveintab(t_info *info, int whichray)

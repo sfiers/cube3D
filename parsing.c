@@ -6,7 +6,7 @@
 /*   By: lduhamel <lduhamel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/31 17:00:17 by lduhamel          #+#    #+#             */
-/*   Updated: 2020/04/03 10:17:50 by lduhamel         ###   ########.fr       */
+/*   Updated: 2020/04/05 16:15:00 by lduhamel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,8 @@ int	check_vside(t_maptab *tab, t_info *info, char **line, int i)
 {
 	if ((*line)[0] != '1' || (*line)[ft_strlen1(*line) - 1] != '1')
 		return (-1);
-	if ((*line)[i] == 'N' || (*line)[i] == 'E' || (*line)[i] == 'S' || (*line)[i] == 'W' || (*line)[i] == '0' || (*line)[i] == '1' || (*line)[i] == '2')
+	if ((*line)[i] == 'N' || (*line)[i] == 'E' || (*line)[i] == 'S' || (*line)[i] == 'W'
+		|| (*line)[i] == '0' || (*line)[i] == '1' || (*line)[i] == '2')
 	{
 		if ((*line)[i] == '2')
 			info->nbsprite++;
@@ -187,6 +188,7 @@ void		put_error(t_error *error)
 	if (error->ret < 0)
 		ft_putstr1("Error\n");
 	ft_putstr1(error->msg);
+	free(error->msg);
 	//free(tab->error);
 }
 
@@ -199,22 +201,26 @@ int			first_string(t_maptab *tab, t_info *info)
 	tab->ret = 1;
 	while(tab->ret == 1)
 	{
-		//init_maptab(tab);
 		tab->ret = get_next_line(tab->fd, &tab->line);
 		//printf("line = %s\n", tab->line);
 		if (tab->line[0] == '\0')
+		{
+			free(tab->line);
 			tab->error.ret = -4;
-		// cleanline(tab, info, &tab->line, &newline);
-		if ((cleanline(tab, info, &tab->line, &newline) < 0) && newline != NULL) 
-			free(newline);
+			return (-1);
+		}
+		if (cleanline(tab, info, &tab->line, &newline) == 0)
+			return (-1);
 		if (tab->error.ret < 0)
 		{
-			if (tab->map_str1 != NULL)
-				free(tab->map_str1);
+			newline != NULL ? free(newline) : 0;
+			tab->line != NULL ? free(tab->line) : 0;
 			return(-1);
 		}
-		tab->map_str1 = ft_join_lines(tab->map_str1, newline, tab->counter);
 		free(tab->line);
+		if ((tab->map_str1 = ft_join_lines(tab->map_str1, newline, tab->counter)) == NULL)
+			return (-1);
+		free(newline);
 		tab->counter++;
 	}
 
@@ -247,6 +253,7 @@ int			first_string(t_maptab *tab, t_info *info)
 	// if (tab->letter != 1)
 	// 	return (-1);
 	// tab->lines_nb = ft_lines_number(tab->map_str);
+	//free(newline);
 	return (1);
 }
 
@@ -302,6 +309,7 @@ int			second_string(t_maptab *tab)
 		limit = (limit + tab->len_max + 1);
 	}	
 	tab->map_str2[j] = '\0';
+	free(tab->map_str1);
 	return(1);
 }
 
@@ -314,13 +322,17 @@ int		str_to_tab(t_maptab *tab)
 	i = 0;
 	j = 0;
 	k = 0;
-	tab-> i = 0;
+	tab->i = 0;
 	if (!(tab->tab = malloc(sizeof(int*) * (tab->counter))))
+	{
+		free(tab->map_str2);
 		return (-1);
+	}
 	while (tab->i < tab->counter)
 	{
 		if (!(tab->tab[tab->i++] = malloc(sizeof(int) * tab->len_max)))
 		{
+			free(tab->map_str2);
 			free(tab->tab);
 			return (-1);
 		}
@@ -338,6 +350,7 @@ int		str_to_tab(t_maptab *tab)
 		k++;
 		j++;
 	}
+	free(tab->map_str2);
 	return (1);
 }
 
@@ -430,8 +443,19 @@ int	parsing(t_maptab *tab, t_info *info)
 	tab->error.ret = 0;
 	if ((tab->fd = open("map.txt", O_RDONLY)) < 0)
 		return (-1);
-	if (first_string(tab, info) == -1 || second_string(tab) == -1 || str_to_tab(tab) == -1 || lastcheck_closing(tab, &tab->error) == -1)
+	if (first_string(tab, info) == -1 || second_string(tab) == -1
+		|| str_to_tab(tab) == -1)
 	{
+		put_error(&tab->error);
+		return(-1);
+	}
+	if (lastcheck_closing(tab, &tab->error) == -1)
+	{
+		j = 0;
+		while (j < tab->counter)
+		{
+			free(tab->tab[j++]);
+		}
 		put_error(&tab->error);
 		return(-1);
 	}
@@ -455,14 +479,14 @@ int	parsing(t_maptab *tab, t_info *info)
 	// 	put_error(error);
 	// 	return (-1);
 	// }
-	// for(j=0; j < tab->counter; j++)
-  	// {
-    // for(i = 0; i < tab->len_max; i++)
-    // {
-    //   // // printf("%d",tab->tab[j][i]);
-    // }
-    // // // printf("\n");
-	// }
+	for(j=0; j < tab->counter; j++)
+  	{
+    for(i = 0; i < tab->len_max; i++)
+    {
+      printf("%d",tab->tab[j][i]);
+    }
+    printf("\n");
+	}
 	close(tab->fd);
 	return(0);
 }

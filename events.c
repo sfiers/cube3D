@@ -10,6 +10,7 @@ int             ft_close(int keycode, t_mlx_ptr *s)
 
 int	ft_key_hit(int keycode, t_info *info)
 {
+	printf("ft_key_hit\n");
 	if (keycode == KEY_UP)
 		info->move.up = 1;
 	if (keycode == KEY_DOWN)
@@ -27,6 +28,7 @@ int	ft_key_hit(int keycode, t_info *info)
 
 int	ft_key_release(int keycode, t_info *info)
 {
+	printf("ft_key_release\n");
 	if (keycode == KEY_UP)
 		info->move.up = 0;
 	if (keycode == KEY_DOWN)
@@ -74,6 +76,8 @@ int	ft_key_release(int keycode, t_info *info)
 int	ft_key_press(int keycode, t_info *info, t_sprites *barrel)
 {
 	printf("keycode = %d\n", keycode);
+	printf("ft_key_press\n");
+	printf("info->move.up = %d \n", info->move.up);
 	// if (info->move.up == 1 || info->move.down == 1)
 	// {
 	// 	if (keycode == KEY_UP || keycode == KEY_DOWN)
@@ -84,9 +88,9 @@ int	ft_key_press(int keycode, t_info *info, t_sprites *barrel)
 	// 	if (keycode == KEY_LEFT || keycode == KEY_RIGHT)
 	// 		ft_angle(keycode, info);
 	// }
-	if (keycode == 65307)
-		exit(0);
-    	// mlx_destroy_window(s->mlx, s->win);
+	// if (keycode == 65307)
+	// 	exit(0);
+    	// // mlx_destroy_window(s->mlx, s->win);
 	// rendering(info);
 	// // // printf("a.x = %f\n", info->a.x);
 	// // // printf("a.y = %f\n", info->a.y);
