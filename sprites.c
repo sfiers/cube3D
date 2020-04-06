@@ -240,7 +240,7 @@ int coordinatesofbarrel(t_info *info)
 	while (i < info->mapheight)
 	{
 		j = 0;
-		while (j < info->mapwidth && n < info->nbsprite)
+		while (j < info->mapwidth)
 		{
 			if (info->worldMap[i][j] == 2)
 			{
@@ -248,11 +248,21 @@ int coordinatesofbarrel(t_info *info)
 				info->barrel.y[n] = (info->mapheight - 1 - i) * 64 + 32;
 				n++;
 			}
+			if (info->worldMap[i][j] == 9)
+				(info->worldMap[i][j] = 1);
 			player_position(info, i, j);
 		//	printf("info->angle = %f\n", info->angle);
 			j++;
 		}
 		i++;
+	}
+		for(j=0; j < info->mapheight; j++)
+  	{
+    for(i = 0; i < info->mapwidth; i++)
+    {
+      printf("%d",info->worldMap[j][i]);
+    }
+    printf("\n");
 	}
 	return (1);
 }
@@ -272,6 +282,10 @@ void player_position(t_info *info, int i, int j)
 	{
 		info->a.x = j * 64 + 32;
 		info->a.y = (info->mapheight - 1 - i) * 64 + 32;
+		printf("info->mapwidth = %d\n", info->mapwidth);
+		printf("info->angle = %f\n", info->angle);
+		printf("a.x = %f\n", info->a.x);
+		printf("a.y = %f\n", info->a.y);
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: lduhamel <lduhamel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/13 13:18:04 by lduhamel          #+#    #+#             */
-/*   Updated: 2020/04/03 17:31:10 by lduhamel         ###   ########.fr       */
+/*   Updated: 2020/04/04 16:24:25 by lduhamel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -321,6 +321,7 @@ int read_elem(t_element *elem, t_info *info)
 			which_texture(elem, info);
 		if (elem->ret < 0)
 			return (-1);
+		free(elem->line);
 	}
 	return (0);
 }

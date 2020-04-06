@@ -10,9 +10,11 @@ int             ft_close(int keycode, t_mlx_ptr *s)
 
 int	ft_key_press(int keycode, t_info *info, t_sprites *barrel)
 {
-	if (keycode == 125 || keycode == 126)
+	// w = 13 ; a = 0 ; s = 1 ; d = 2;
+	printf("keycode = %d\n", keycode);
+	if (keycode == 125 || keycode == 126 ) // 125 = bas ; 126 = haut
 		ft_moove(keycode, info);
-	if (keycode == 123 || keycode == 124)
+	if (keycode == 123 || keycode == 124) //123 = gauche 124 = droite
 		ft_angle(keycode, info);
 	if (keycode == 53)
 		exit(0);

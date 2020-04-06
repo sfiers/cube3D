@@ -149,8 +149,10 @@ int main()
 	t_sprites barrel;
 	t_element elem;
 
-	parsing(&tab, &info);
-	info.worldMap = tab.tab;
+	if (parsing(&tab, &info) == -1)
+		return (-1);
+	else
+		info.worldMap = tab.tab;
 	if (parsing2(&elem, &info) == -1)
 	{
 		printf("stop\n");
@@ -174,6 +176,27 @@ int main()
 //	mlx_hook(s.win, 3, 1L<<1, ft_angle, &s);
 	// mlx_hook(info.s.win, 2, 1L<<0, ft_close, &info.s); //fermer la fenetre, 0xffff);  //imprimer pixel
   mlx_loop(info.s.mlx);
+//   if (tab.map_str1 != NULL)
+//   	free(tab.map_str1);
+  free_malloc(&info);
+ // system("leaks checker");
+}
+
+void free_malloc(t_info *info)
+{
+	int i;
+
+	i = 0;
+	free(info->no_texture);
+	free(info->so_texture);
+	free(info->ea_texture);
+	free(info->we_texture);
+	free(info->sp_texture);
+	while (i < info->mapheight)
+	{
+		free(info->worldMap[i]);
+		i++;
+	}
 }
 
 int saveintab(t_info *info, int whichray)

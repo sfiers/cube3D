@@ -460,7 +460,12 @@ int rendering(t_info *info);
 void	mlx_put_in_img(t_info *info, int x, int y, int color);
 int saveintab(t_info *info, int whichray);
 void update_info(t_info *info);
-void free_tabs(t_info *info);
 
+/*
+** --------------------------- Free --------------------------------------
+*/
+
+void free_tabs(t_info *info);
+void free_malloc(t_info *info);
 
 #endif
