@@ -51,6 +51,16 @@
 ** ------------------------- Structure Definitions -----------------------------
 */
 
+typedef struct				s_move
+{
+	int						up;
+	int						down;
+	int						right;
+	int						left;
+	int						camr;
+	int						caml;
+}							t_move;
+
 typedef struct      s_def
 {
 	int screenwidth;
@@ -224,6 +234,7 @@ typedef struct      s_info
 	// double temp_y;
 	int nbsprite;
 	t_sprites barrel;
+	t_move move;
 
 //	int wall[2];
 	// t_rgb ceiling;
@@ -309,6 +320,19 @@ typedef struct	mlx_ptr_s
 #define BACKWARD -1
 #define LEFT 1
 #define RIGHT -1 
+#define KEY_UP 65362
+#define KEY_DOWN 65364
+#define KEY_RIGHT 65361
+#define KEY_LEFT 65363
+#define ROTATE_LEFT 123
+#define ROTATE_RIGHT 124
+#define KEYPRESS 2
+#define KEYRELEASE 3
+#define KEYPRESSMASK 1
+#define KEYRELEASEMASK 10
+
+int	ft_key_hit(int keycode, t_info *info);
+int	ft_key_release(int keycode, t_info *info);
 
 /*
 ** -----------------------------------------------------------------------------

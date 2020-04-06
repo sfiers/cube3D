@@ -167,13 +167,19 @@ int main()
 	rendering(&info);
 	free_tabs(&info);
 	// mlx_put_image_to_window(s.mlx, s.win, s.img, info.screenWidth, info.screenHeight);
-	mlx_key_hook(info.s.win, ft_key_press, &info);
+	// mlx_hook(env.win_ptr, 2, 1, ft_key_hit, &env);
+	// mlx_hook(env.win_ptr, 3, 10, ft_key_release, &env);
+	mlx_hook(info.s.win, KEYPRESS, KEYPRESSMASK, ft_key_hit, &info);
+	mlx_hook(info.s.win, KEYRELEASE, KEYRELEASEMASK, ft_key_release, &info);
+	mlx_loop_hook(info.s.mlx, ft_key_press, &info);
+	// mlx_key_hook(info.s.win, ft_key_press, &info);
 	// mlx_key_hook(s.win, ft_angle, &info);
 //	mlx_loop_hook(s.mlx);
 	//mlx_hook(s.win, 2, 1L<<0, ft_angle, &s);
 //	mlx_hook(s.win, 3, 1L<<1, ft_angle, &s);
 	// mlx_hook(info.s.win, 2, 1L<<0, ft_close, &info.s); //fermer la fenetre, 0xffff);  //imprimer pixel
   mlx_loop(info.s.mlx);
+  free(tab.map_str1);
 }
 
 int saveintab(t_info *info, int whichray)

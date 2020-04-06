@@ -204,7 +204,9 @@ int			first_string(t_maptab *tab, t_info *info)
 		//printf("line = %s\n", tab->line);
 		if (tab->line[0] == '\0')
 			tab->error.ret = -4;
-		cleanline(tab, info, &tab->line, &newline);
+		// cleanline(tab, info, &tab->line, &newline);
+		if ((cleanline(tab, info, &tab->line, &newline) < 0) && newline != NULL) 
+			free(newline);
 		if (tab->error.ret < 0)
 		{
 			if (tab->map_str1 != NULL)
