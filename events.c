@@ -41,7 +41,7 @@ int	ft_key_release(int keycode, t_info *info)
 		info->move.camr = 0;
 	if (keycode == ROTATE_LEFT)
 		info->move.caml = 0;
-	return (1);
+	return (0);
 }
 
 // void	ft_move(t_info *info)
@@ -77,7 +77,7 @@ int	ft_key_press(int keycode, t_info *info, t_sprites *barrel)
 {
 	printf("keycode = %d\n", keycode);
 	printf("ft_key_press\n");
-	printf("info->move.up = %d \n", info->move.up);
+	// printf("info->move.up = %d \n", info->move.up);
 	// if (info->move.up == 1 || info->move.down == 1)
 	// {
 	// 	if (keycode == KEY_UP || keycode == KEY_DOWN)
@@ -91,11 +91,11 @@ int	ft_key_press(int keycode, t_info *info, t_sprites *barrel)
 	// if (keycode == 65307)
 	// 	exit(0);
     	// // mlx_destroy_window(s->mlx, s->win);
-	// rendering(info);
+	rendering(info);
 	// // // printf("a.x = %f\n", info->a.x);
 	// // // printf("a.y = %f\n", info->a.y);
 	// // // printf("angle = %f\n", info->angle);
-	return 1;
+	return 0;
 }
 
 int             ft_moove(int keycode, t_info *info)

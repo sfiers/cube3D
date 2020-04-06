@@ -177,6 +177,7 @@ int main()
 	// mlx_hook(env.win_ptr, 3, 10, ft_key_release, &env);
 	mlx_hook(info.s.win, KEYPRESS, KEYPRESSMASK, ft_key_hit, &info);
 	mlx_hook(info.s.win, KEYRELEASE, KEYRELEASEMASK, ft_key_release, &info);
+		printf("info->move.up = %d \n", info.move.up);
 	mlx_loop_hook(info.s.mlx, ft_key_press, &info);
 	// mlx_key_hook(info.s.win, ft_key_press, &info);
 	// mlx_key_hook(s.win, ft_angle, &info);
