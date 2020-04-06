@@ -1,5 +1,13 @@
 #ifndef WOLF_H 
 # define WOLF_H
+# define F_F	    (1 << 0)
+# define F_C	    (1 << 1)
+# define F_R		(1 << 2)
+# define F_SP	    (1 << 3)
+# define F_NO	    (1 << 4)
+# define F_SO       (1 << 5)
+# define F_WE		(1 << 6)
+# define F_EA       (1 << 7)
 // a.x = 750.951965
 // a.y = 265.356750
 // angle = 60.000000
@@ -263,6 +271,7 @@ typedef struct      s_maptab
 typedef struct      s_element
 {
 	char *line;
+	unsigned char bitflag;
 	int counter;
 	// char *texture_we;
 	// char *texture_sprite;
@@ -360,6 +369,7 @@ int	parsing2(t_element *elem, t_info *info);
 char *texture(t_element *elem, t_info *info);
 int which_texture(t_element *elem, t_info *info);
 int texture_copy(t_element *elem, t_info *info, char *path, int n);
+int bit_texture(t_element *elem);
 int color(t_element *elem, int trgb);
 int which_color(t_element *elem, t_info *info);
 int resolution(t_element *elem, t_info *info);
@@ -369,6 +379,7 @@ int		ft_strlen1(char *s);
 void		put_error1(t_element *elem);
 int is_digit(char c);
 void init_elem(t_element *elem);
+int nb_elements(t_element *elem, t_info *info);
 
 
 /*

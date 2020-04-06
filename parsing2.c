@@ -6,7 +6,7 @@
 /*   By: lduhamel <lduhamel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/13 13:18:04 by lduhamel          #+#    #+#             */
-/*   Updated: 2020/04/04 16:24:25 by lduhamel         ###   ########.fr       */
+/*   Updated: 2020/04/06 13:29:47 by lduhamel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,9 @@ void		put_error1(t_element *elem)
 {
 	error_ret1(elem);
 	if (elem->ret < 0)
-		ft_putstr1("Error\n");
+		//ft_putstr1("Error\n");
 	ft_putstr1(elem->msg);
-	//free(tab->error);
+	free(elem->msg);
 }
 
 int			atoi_v1(t_element *elem)
@@ -113,6 +113,10 @@ int error_ret1(t_element *elem)
 			elem->msg = ft_strdup1("Color information must only be 3 numbers");
 		if (elem->ret == -8)
 			elem->msg = ft_strdup1("Texture path should only be a path (spaces allowed before and after the path)");
+		if (elem->ret == -9)
+			elem->msg = ft_strdup1("Only 1 description per element please");
+		if (elem->ret == -10)
+			elem->msg = ft_strdup1("An element in missing (8 are needed)");
 		return (1);
 	}
 	return (0);
@@ -120,27 +124,33 @@ int error_ret1(t_element *elem)
 
 int resolution(t_element *elem, t_info *info)
 {
-	elem->flag = 0;
-	elem->i++;
-	while (elem->line[elem->i] != '\0')
+	if (!(F_R & elem->bitflag))
 	{
-		if (elem->line[elem->i] == '-' && is_digit(elem->line[elem->i+1]))
-			return (-3);
-		else if (is_digit(elem->line[elem->i]))
-		{
-			info->screenwidth = (elem->flag == 0 ? atoi_v1(elem) : info->screenwidth);
-			info->screenheight = (elem->flag == 1 ? atoi_v1(elem) : info->screenheight);
-			elem->flag++;
-		}
-		else if (elem->line[elem->i] != ' ')
-			return (-1);
+		elem->bitflag = elem->bitflag | F_R;
+		elem->flag = 0;
 		elem->i++;
+		while (elem->line[elem->i] != '\0')
+		{
+			if (elem->line[elem->i] == '-' && is_digit(elem->line[elem->i+1]))
+				return (-3);
+			else if (is_digit(elem->line[elem->i]))
+			{
+				info->screenwidth = (elem->flag == 0 ? atoi_v1(elem) : info->screenwidth);
+				info->screenheight = (elem->flag == 1 ? atoi_v1(elem) : info->screenheight);
+				elem->flag++;
+			}
+			else if (elem->line[elem->i] != ' ')
+				return (-1);
+			elem->i++;
+		}
+		return (elem->flag == 2 ? 1 : -2);
+		info->screenwidth = (info->screenwidth > 3200 ? 3200 : info->screenwidth);
+		info->screenwidth = (info->screenwidth < 320 ? 320 : info->screenwidth);
+		info->screenheight = (info->screenheight > 1800 ? 1800 : info->screenheight);
+		info->screenheight = (info->screenheight < 200 ? 200 : info->screenheight);
 	}
-	return (elem->flag == 2 ? 1 : -2);
-	info->screenwidth = (info->screenwidth > 3200 ? 3200 : info->screenwidth);
-	info->screenwidth = (info->screenwidth < 320 ? 320 : info->screenwidth);
-	info->screenheight = (info->screenheight > 1800 ? 1800 : info->screenheight);
-	info->screenheight = (info->screenheight < 200 ? 200 : info->screenheight);
+	else
+		return (-9);
 	return (1);
 }
 
@@ -258,13 +268,49 @@ char *texture(t_element *elem, t_info *info)
 	return (path);
 }
 
+int bit_texture(t_element *elem)
+{
+	char flag;
+	if (elem->line[elem->i] == 'S' && elem->line[elem->i+1] != 'O')
+		flag = F_SP;
+	else if (elem->line[elem->i] == 'N' && elem->line[elem->i+1] == 'O')
+		flag = F_NO;
+	else if (elem->line[elem->i] == 'S' && elem->line[elem->i+1] == 'O')
+		flag = F_SO;
+	else if (elem->line[elem->i] == 'W' && elem->line[elem->i+1] == 'E')
+		flag = F_WE;
+	else if (elem->line[elem->i] == 'E' && elem->line[elem->i+1] == 'A')
+		flag = F_EA;
+	if (!(flag & elem->bitflag))
+		elem->bitflag = elem->bitflag | flag;
+	else
+		elem->ret = -9;
+	return (elem->ret);
+}
+
+// void bit_flag(t_element *elem, char flag)
+// {
+// 	if (elem->line[elem->i] == 'S' && elem->line[elem->i+1] != 'O')
+// 	{
+// 		bit_flag()
+// 	}
+// 	else if (elem->line[elem->i] == 'N' && elem->line[elem->i+1] == 'O')
+// 		info->no_texture = texture(elem, info);
+// 	else if (elem->line[elem->i] == 'S' && elem->line[elem->i+1] == 'O')
+// 		info->so_texture = texture(elem, info);
+// 	else if (elem->line[elem->i] == 'W' && elem->line[elem->i+1] == 'E')
+// 		info->we_texture = texture(elem, info);
+// 	else if (elem->line[elem->i] == 'E' && elem->line[elem->i+1] == 'A')
+// 		info->ea_texture = texture(elem, info);
+// 	return (elem->ret);
+
 int which_texture(t_element *elem, t_info *info)
 {
 	elem->texture_flag = 1;  //when = 1 => increment elem->i;
 	if (elem->line[elem->i] == 'S' && elem->line[elem->i+1] != 'O')
 	{
-		info->sp_texture = texture(elem, info);
-		elem->texture_flag = 0;
+			info->sp_texture = texture(elem, info);
+			elem->texture_flag = 0;
 	}
 	else if (elem->line[elem->i] == 'N' && elem->line[elem->i+1] == 'O')
 		info->no_texture = texture(elem, info);
@@ -274,28 +320,34 @@ int which_texture(t_element *elem, t_info *info)
 		info->we_texture = texture(elem, info);
 	else if (elem->line[elem->i] == 'E' && elem->line[elem->i+1] == 'A')
 		info->ea_texture = texture(elem, info);
-	return (1);
+	return (elem->ret);
 }
 
 int which_color(t_element *elem, t_info *info)
 {
 	if (elem->line[elem->i] == 'F')
 	{
-		if ((info->trgb_floor = color(elem, info->trgb_floor)) < 0)
+		if (!(F_F & elem->bitflag))
 		{
-			elem->ret = info->trgb_floor;
-			return (elem->ret);
+			elem->bitflag = elem->bitflag | F_F;
+			if ((info->trgb_floor = color(elem, info->trgb_floor)) < 0)
+				elem->ret = info->trgb_floor;
 		}
+		else
+			elem->ret = -9;
 	}
 	else if (elem->line[elem->i] == 'C')
 	{
-		if ((info->trgb_ceiling = color(elem, info->trgb_ceiling)) < 0)
+		if (!(F_C & elem->bitflag))
 		{
-			elem->ret = info->trgb_ceiling;
-			return (elem->ret);
+			elem->bitflag = elem->bitflag | F_C;
+			if ((info->trgb_ceiling = color(elem, info->trgb_ceiling)) < 0)
+				elem->ret = info->trgb_ceiling;
 		}
+		else
+			elem->ret = -9;
 	}
-	return (1);
+	return (elem->ret);
 }
 
 int read_elem(t_element *elem, t_info *info)
@@ -305,7 +357,7 @@ int read_elem(t_element *elem, t_info *info)
 	{
 		elem->i = 0;
 		elem->ret = get_next_line(elem->fd, &elem->line);
-		printf("line = %s\n", elem->line);
+		//printf("line = %s\n", elem->line);
 		if (elem->line[0] == '\0')
 			return (0);
 		while (elem->line[elem->i] == ' ')
@@ -318,7 +370,10 @@ int read_elem(t_element *elem, t_info *info)
 			|| (elem->line[elem->i] == 'S' && elem->line[elem->i+1] == 'O')
 			|| (elem->line[elem->i] == 'W' && elem->line[elem->i+1] == 'E')
 			|| (elem->line[elem->i] == 'E' && elem->line[elem->i+1] == 'A'))
-			which_texture(elem, info);
+		{
+			if (bit_texture(elem) >= 0)
+				which_texture(elem, info);
+		}
 		if (elem->ret < 0)
 			return (-1);
 		free(elem->line);
@@ -326,12 +381,31 @@ int read_elem(t_element *elem, t_info *info)
 	return (0);
 }
 
+int nb_elements(t_element *elem, t_info *info)
+{
+	if(!(F_F & elem->bitflag) || !(F_C & elem->bitflag) || !(F_R & elem->bitflag) ||
+		!(F_SP & elem->bitflag) || !(F_SO & elem->bitflag) || !(F_NO & elem->bitflag) ||
+		!(F_WE & elem->bitflag) || !(F_EA & elem->bitflag))
+	{
+			elem->ret = (-10);
+			// info->sp_texture != NULL ? free(info->sp_texture) : 0;
+			// info->no_texture != NULL ? free(info->no_texture) : 0;
+			// info->so_texture != NULL ? free(info->so_texture) : 0;
+			// info->we_texture != NULL ? free(info->we_texture) : 0;
+			// info->ea_texture != NULL ? free(info->ea_texture) : 0;
+
+		return (-1);
+	}
+	return (1);
+}
+
 int	parsing2(t_element *elem, t_info *info)
 {
+	elem->bitflag = 0;
 	elem->counter = 0;
 	if ((elem->fd = open("map2.txt", O_RDONLY)) < 0)
 		return (-1);
-	if (read_elem(elem, info) < 0)
+	if (read_elem(elem, info) < 0 || nb_elements(elem, info) < 0)
 	{
 		put_error1(elem);
 		return (-1);

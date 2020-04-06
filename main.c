@@ -146,7 +146,7 @@ int main()
 	t_info info;
 	t_maptab tab;
 	t_error error;
-	t_sprites barrel;
+//	t_sprites barrel;
 	t_element elem;
 
 	if (parsing(&tab, &info) == -1)
@@ -179,7 +179,7 @@ int main()
 //   if (tab.map_str1 != NULL)
 //   	free(tab.map_str1);
   free_malloc(&info);
- // system("leaks checker");
+  //system("leaks checker");
 }
 
 void free_malloc(t_info *info)

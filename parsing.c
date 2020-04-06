@@ -6,7 +6,7 @@
 /*   By: lduhamel <lduhamel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/31 17:00:17 by lduhamel          #+#    #+#             */
-/*   Updated: 2020/04/05 16:15:00 by lduhamel         ###   ########.fr       */
+/*   Updated: 2020/04/06 13:38:36 by lduhamel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,7 +202,7 @@ int			first_string(t_maptab *tab, t_info *info)
 	while(tab->ret == 1)
 	{
 		tab->ret = get_next_line(tab->fd, &tab->line);
-		//printf("line = %s\n", tab->line);
+		printf("line = %s\n", tab->line);
 		if (tab->line[0] == '\0')
 		{
 			free(tab->line);
@@ -479,14 +479,14 @@ int	parsing(t_maptab *tab, t_info *info)
 	// 	put_error(error);
 	// 	return (-1);
 	// }
-	for(j=0; j < tab->counter; j++)
-  	{
-    for(i = 0; i < tab->len_max; i++)
-    {
-      printf("%d",tab->tab[j][i]);
-    }
-    printf("\n");
-	}
+	// for(j=0; j < tab->counter; j++)
+  	// {
+    // for(i = 0; i < tab->len_max; i++)
+    // {
+    //   printf("%d",tab->tab[j][i]);
+    // }
+    // printf("\n");
+	// }
 	close(tab->fd);
 	return(0);
 }
